@@ -1,0 +1,34 @@
+** Prover: nbu; version=0.1; variant=(seq=bsf, strategy=DOWN_EXPANSION, eval=cover)
+** Testset: rr
+** Problems: total [20], provable [20], unprovable [0], unknown status [0]
+** Test report: failed [0], successful [20], unchecked [0]
+** Total timings (sec): PS (proof-search) [96.467], NSC (initial node set) [0.008], PP (problem parsing) [0.365]
+** Total proof time (PS + NSC) (sec): [96.475 seconds] (hh:mm:ss + ms) [00:01:36 + 475]
+** Total proof time (PS + NSC + PP) (sec): [96.840 seconds] (hh:mm:ss + ms) [00:01:36 + 840]
+****************************************************************
+** Single problems report, columns description:
+**   test: problem, status, proof-search result, test result;
+**   times (ms): proof-time (PS + NSC), PS (proof-search), NSC (initial node set construction), PP (problem parsing);
+**   details: iterations, generated nodes, max stack size, visited branches, failed branches;
+**   problem source file
+** --------------------------------------------------------------
+test: SYJ206+1.001, PROVABLE, SUCCESS, PASSED; times (ms): 26, 21, 5, 21; details: 11; 7; 2; 1; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.001.p
+test: SYJ206+1.002, PROVABLE, SUCCESS, PASSED; times (ms): 0, 0, 0, 6; details: 25; 17; 3; 3; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.002.p
+test: SYJ206+1.003, PROVABLE, SUCCESS, PASSED; times (ms): 2, 2, 0, 6; details: 39; 27; 3; 5; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.003.p
+test: SYJ206+1.004, PROVABLE, SUCCESS, PASSED; times (ms): 5, 5, 0, 6; details: 53; 37; 3; 7; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.004.p
+test: SYJ206+1.005, PROVABLE, SUCCESS, PASSED; times (ms): 11, 11, 0, 6; details: 67; 47; 3; 9; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.005.p
+test: SYJ206+1.006, PROVABLE, SUCCESS, PASSED; times (ms): 20, 20, 0, 9; details: 81; 57; 3; 11; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.006.p
+test: SYJ206+1.007, PROVABLE, SUCCESS, PASSED; times (ms): 41, 41, 0, 6; details: 95; 67; 3; 13; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.007.p
+test: SYJ206+1.008, PROVABLE, SUCCESS, PASSED; times (ms): 56, 55, 1, 7; details: 109; 77; 3; 15; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.008.p
+test: SYJ206+1.009, PROVABLE, SUCCESS, PASSED; times (ms): 85, 85, 0, 9; details: 123; 87; 3; 17; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.009.p
+test: SYJ206+1.010, PROVABLE, SUCCESS, PASSED; times (ms): 123, 123, 0, 10; details: 137; 97; 3; 19; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.010.p
+test: SYJ206+1.011, PROVABLE, SUCCESS, PASSED; times (ms): 219, 219, 0, 6; details: 151; 107; 3; 21; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.011.p
+test: SYJ206+1.012, PROVABLE, SUCCESS, PASSED; times (ms): 161, 161, 0, 8; details: 165; 117; 3; 23; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.012.p
+test: SYJ206+1.013, PROVABLE, SUCCESS, PASSED; times (ms): 163, 162, 1, 6; details: 179; 127; 3; 25; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.013.p
+test: SYJ206+1.014, PROVABLE, SUCCESS, PASSED; times (ms): 269, 269, 0, 9; details: 193; 137; 3; 27; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.014.p
+test: SYJ206+1.015, PROVABLE, SUCCESS, PASSED; times (ms): 668, 668, 0, 8; details: 207; 147; 3; 29; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.015.p
+test: SYJ206+1.016, PROVABLE, SUCCESS, PASSED; times (ms): 1669, 1669, 0, 11; details: 221; 157; 3; 31; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.016.p
+test: SYJ206+1.017, PROVABLE, SUCCESS, PASSED; times (ms): 3974, 3973, 1, 10; details: 235; 167; 3; 33; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.017.p
+test: SYJ206+1.018, PROVABLE, SUCCESS, PASSED; times (ms): 8138, 8138, 0, 111; details: 249; 177; 3; 35; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.018.p
+test: SYJ206+1.019, PROVABLE, SUCCESS, PASSED; times (ms): 17304, 17304, 0, 4; details: 263; 187; 3; 37; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.019.p
+test: SYJ206+1.020, PROVABLE, SUCCESS, PASSED; times (ms): 63541, 63541, 0, 106; details: 277; 197; 3; 39; 0; /Users/ferram/wp/tprover/test_jtp/test/wffs/iltp_iltp_SYJ/SYJ206+1.020.p
