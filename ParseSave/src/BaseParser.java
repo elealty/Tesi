@@ -5,10 +5,6 @@ import java.io.InputStreamReader;
 
 public class BaseParser {
 
-    public BaseParser() {
-        // TODO Auto-generated constructor stub
-    }
-
     public static void parseStandardFile(String filename) {
         System.out.println("parseFileA");
         try {
@@ -28,15 +24,12 @@ public class BaseParser {
                 }
                 //
                 String[] lineInfo = strLine.split(";");
-                String[] test = lineInfo[0].split(",");
-                String[] times = lineInfo[1].replace("times (ms):", "").split(
-                        ",");
+                Theorem parsedTheorem = Theorem.getTheoremFromString(
+                        lineInfo[0], lineInfo[1]);
 
-                System.out.println("TEST:" + test.toString());
-                System.out.println("TIME:" + times.toString());
-
-                String[] infoToSave = new String[] { test[0], test[1], times[0] };
-                SqlLiteDb.insertTheoremRow(infoToSave);
+                SqlLiteDb.insertTheoremRow(parsedTheorem.name,
+                        parsedTheorem.provable, parsedTheorem.success,
+                        parsedTheorem.execution_time);
 
             }
 
