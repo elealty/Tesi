@@ -1,14 +1,15 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class BaseParser {
 
-    public static void parseStandardFile(String filename) {
-        System.out.println("parserStandardFile: "+ filename);
+    public static void parseStandardFile(File file) {
+        System.out.println("parserStandardFile: "+ file);
         try {
-            FileInputStream fstream = new FileInputStream(filename);
+            FileInputStream fstream = new FileInputStream(file);
             System.out.println("Total file size to read (in bytes) : "
                     + fstream.available());
             BufferedReader br = new BufferedReader(new InputStreamReader(

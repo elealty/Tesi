@@ -86,20 +86,21 @@ public class SqlLiteDb {
         }
     }
 
-    public static void getTheoremWithMaxExecution() {
+    public static ResultSet getTheoremWithMaxExecution() {
         try {
             stmt = conn.createStatement();
             String sql = "SELECT name, max(execution_time) as max_execution from theorem_info";
             ResultSet res = stmt.executeQuery(sql);
-
-            while (res.next()) {
-                System.out.println("THEOREM WITH MAX EXECUTION:"
-                        + res.getString("name") + "TIME:"
-                        + res.getInt("max_execution") + " ms");
-            }
+            return res;
+            //while (res.next()) {
+            //    System.out.println("THEOREM WITH MAX EXECUTION:"
+            //            + res.getString("name") + "TIME:"
+            //            + res.getInt("max_execution") + " ms");
+           // }
         } catch (Exception e) {
             System.err.println("ERRORE getTheoremWithMaxExecution : "
                     + e.getMessage());
         }
+		return null;
     }
 }
