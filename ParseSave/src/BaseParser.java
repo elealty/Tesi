@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 public class BaseParser {
 
     public static void parseStandardFile(String filename) {
-        System.out.println("parseFileA");
+        System.out.println("parserStandardFile: "+ filename);
         try {
             FileInputStream fstream = new FileInputStream(filename);
             System.out.println("Total file size to read (in bytes) : "

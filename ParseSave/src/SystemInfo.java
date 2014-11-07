@@ -16,7 +16,7 @@ public class SystemInfo {
         System.out.println("Version of the OS: " + System.getProperty(versionOS));
         System.out.println("Architecture of THe OS: " + System.getProperty(architectureOS));
         System.out.println(System.getProperties());
-        OperatingSystemMXBean bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        OperatingSystemMXBean bean = ManagementFactory.getOperatingSystemMXBean();
         
         System.out.println("\nprocessors:"+bean.getAvailableProcessors());
         //System.out.println("\nphysical mem size:"+bean.getTotalPhysicalMemorySize());
