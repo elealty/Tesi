@@ -60,9 +60,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         initDb();
 
+        String systemInfo = SystemInfo.getSystemInfo();
         log = new TextArea();
 
-        Label title = new Label();
+        Label title = new Label(systemInfo);
         StackPane.setAlignment(title, Pos.BOTTOM_CENTER);
 
         StackPane root = new StackPane();
@@ -75,8 +76,9 @@ public class Main extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        grid.add(uploadBtn, 0, 1);
-        grid.add(log, 0, 2);
+        grid.add(title, 0, 1);
+        grid.add(uploadBtn, 0, 2);
+        grid.add(log, 0, 3);
 
         Scene scene = new Scene(grid, 400, 400);
         // creare e associare un css
