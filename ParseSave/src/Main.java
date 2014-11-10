@@ -1,13 +1,8 @@
-
 /**
  * @author eleonora
- * 
  */
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -26,108 +21,83 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-
-
 public class Main extends Application {
-	
-	static TextArea log = null;
-	Process p;
-	
-	@Override
-	public void start(Stage primaryStage) {
-		SqlLiteDb.openDb("ParseSave/db/theorem.sqlite3");
-		try {
-			//BorderPane root = new BorderPane();
-			// this thread will read from process without blocking an application
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+
+    static TextArea log = null;
+    Process         p;
+
+    private Button uploadButton(Stage stage) {
+        FileChooser fileChooser = new FileChooser();
+
+        Button openButton = new Button("Seleziona un file...");
+        openButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(final ActionEvent e) {
+                File file = fileChooser.showOpenDialog(stage);
+                if (file != null) {
+                    System.out.println("Apro file" + file);
+                    BaseParser.parseStandardFile(file);
+                    ResultSet res = SqlLiteDb.getTheoremWithMaxExecution();
+                    String max_result = "Tempo massimo teorema \n";
                     try {
-                        //try-with-resources from jdk7, change it back if you use older jdk
-                        try (BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-                            String line;
-
-                            while ((line = bri.readLine()) != null) {
-                                log(line);
-                            }
-                        }
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+                        max_result += res.getString("name") + "TIME:"
+                                + res.getInt("max_execution") + " ms";
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
                     }
+                    log.appendText(max_result);
                 }
-            }).start();
-            
-	        
-	        FileChooser fileChooser = new FileChooser();        
-	        
-	        
-	        Button openButton = new Button("Seleziona un file...");
-	        openButton.setOnAction(
-	                new EventHandler<ActionEvent>() {
-	                    @Override
-	                    public void handle(final ActionEvent e) {
-	                        File file = fileChooser.showOpenDialog(primaryStage);
-	                        if (file != null) {
-	                        	System.out.println("Apro file" +file);
-	                        	BaseParser.parseStandardFile(file);
-	                        	ResultSet res = SqlLiteDb.getTheoremWithMaxExecution();
-	                        	String max_result = "";
-								try {
-									max_result = res.getString("name") + "TIME:"+ res.getInt("max_execution") + " ms";
-								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-	                        	log.appendText(max_result);
-	                        }
-	                    }
-	                });
-	        
-	        log = new TextArea();
-	        
-	        Label title = new Label();
-	        StackPane.setAlignment(title, Pos.BOTTOM_CENTER);
-	        
-	        StackPane root = new StackPane();
+            }
+        });
+        return openButton;
+    }
 
-	       
-	        root.getChildren().add(openButton);
-	        //root.getChildren().add(log);
-	        
-	        GridPane grid = new GridPane();
-	        grid.setAlignment(Pos.CENTER);
-	        grid.setHgap(10);
-	        grid.setVgap(10);
-	        grid.setPadding(new Insets(25, 25, 25, 25));
-	        
-	        grid.add(openButton, 0, 1);
-	        grid.add(log, 0, 2);
-	        Scene scene = new Scene(grid,400,400);
-			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			
-			primaryStage.setTitle("Upload theorem file");
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void main(String[] args) {
-		launch(args);
-	}
-	
-	 public static void log(final String st) {
-		 	System.out.println("LOGGO");
-	        // we can access fx objects only from fx thread
-	        // so we need to wrap log access into Platform#runLater
-	        Platform.runLater(new Runnable() {
+    private void initDb() {
+        SqlLiteDb.openDb("ParseSave/db/theorem.sqlite3");
+    }
 
-	            @Override
-	            public void run() {
-	                log.setText(st + "\n" + log.getText());
-	            }
-	        });
-	    }
+    @Override
+    public void start(Stage primaryStage) {
+        initDb();
+
+        log = new TextArea();
+
+        Label title = new Label();
+        StackPane.setAlignment(title, Pos.BOTTOM_CENTER);
+
+        StackPane root = new StackPane();
+        Button uploadBtn = uploadButton(primaryStage);
+        root.getChildren().add(uploadBtn);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+
+        grid.add(uploadBtn, 0, 1);
+        grid.add(log, 0, 2);
+
+        Scene scene = new Scene(grid, 400, 400);
+        // creare e associare un css
+        // scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
+        primaryStage.setTitle("Upload theorem file");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    public static void log(final String st) {
+        // first prototype, log info
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                log.setText(st + "\n" + log.getText());
+            }
+        });
+    }
 }
-
