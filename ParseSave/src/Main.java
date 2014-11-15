@@ -3,6 +3,7 @@
  */
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -36,8 +37,13 @@ public class Main extends Application {
                 File file = fileChooser.showOpenDialog(stage);
                 if (file != null) {
                     System.out.println("Apro file" + file);
-                    BaseParser.parseStandardFile(file);
-                    ResultSet res = SqlLiteDb.getTheoremWithMaxExecution();
+                    try {
+                        Parser.processFile(file);
+                    } catch (IOException e2) {
+                        e2.printStackTrace();
+                    }
+                    ResultSet res = SqlLiteDb
+                            .getTheoremProvableWithMaxExecution();
                     String max_result = "Tempo massimo teorema \n";
                     try {
                         max_result += res.getString("name") + "TIME:"

@@ -1,0 +1,271 @@
+%--------------------------------------------------------------------------
+% Prover              : pnbu_deM
+%                       nbu prolog DownExp Member
+% Testset             : SYJ
+% Timeout (sec)       : 600
+% Total instances     : 240
+% Solved instances    : 171
+% Provable instances  : 105
+% Unprovable instances: 66
+% Errors              : 0
+% Timeouts            : 69
+% Total time (sec)    : 485.82
+%
+% Families: {
+%    SYJ201, solved 20/20, time 0.996
+%    SYJ202, solved 6/20, time 44.731
+%    SYJ203, solved 20/20, time 0.75
+%    SYJ204, solved 19/20, time 124.829
+%    SYJ205, solved 20/20, time 0.75
+%    SYJ206, solved 20/20, time 117.302
+%    SYJ207, solved 6/20, time 51.419
+%    SYJ208, solved 3/20, time 2.783
+%    SYJ209, solved 9/20, time 76.627
+%    SYJ210, solved 20/20, time 0.85
+%    SYJ211, solved 8/20, time 66.98
+%    SYJ212, solved 20/20, time 0.62
+% }
+%
+
+% Row format: plain
+%--------------------------------------------------------------------------
+SYJ201+1.001; provable; 3
+SYJ201+1.002; provable; 4
+SYJ201+1.003; provable; 5
+SYJ201+1.004; provable; 6
+SYJ201+1.005; provable; 8
+SYJ201+1.006; provable; 11
+SYJ201+1.007; provable; 15
+SYJ201+1.008; provable; 18
+SYJ201+1.009; provable; 24
+SYJ201+1.010; provable; 30
+SYJ201+1.011; provable; 36
+SYJ201+1.012; provable; 44
+SYJ201+1.013; provable; 53
+SYJ201+1.014; provable; 64
+SYJ201+1.015; provable; 76
+SYJ201+1.016; provable; 89
+SYJ201+1.017; provable; 103
+SYJ201+1.018; provable; 118
+SYJ201+1.019; provable; 135
+SYJ201+1.020; provable; 154
+SYJ202+1.001; provable; 2
+SYJ202+1.002; provable; 3
+SYJ202+1.003; provable; 13
+SYJ202+1.004; provable; 163
+SYJ202+1.005; provable; 2685
+SYJ202+1.006; provable; 41865
+SYJ202+1.007; unknown; timeout (600)
+SYJ202+1.008; unknown; timeout (600)
+SYJ202+1.009; unknown; timeout (600)
+SYJ202+1.010; unknown; timeout (600)
+SYJ202+1.011; unknown; timeout (600)
+SYJ202+1.012; unknown; timeout (600)
+SYJ202+1.013; unknown; timeout (600)
+SYJ202+1.014; unknown; timeout (600)
+SYJ202+1.015; unknown; timeout (600)
+SYJ202+1.016; unknown; timeout (600)
+SYJ202+1.017; unknown; timeout (600)
+SYJ202+1.018; unknown; timeout (600)
+SYJ202+1.019; unknown; timeout (600)
+SYJ202+1.020; unknown; timeout (600)
+SYJ203+1.001; provable; 3
+SYJ203+1.002; provable; 3
+SYJ203+1.003; provable; 3
+SYJ203+1.004; provable; 3
+SYJ203+1.005; provable; 3
+SYJ203+1.006; provable; 3
+SYJ203+1.007; provable; 3
+SYJ203+1.008; provable; 3
+SYJ203+1.009; provable; 3
+SYJ203+1.010; provable; 3
+SYJ203+1.011; provable; 3
+SYJ203+1.012; provable; 3
+SYJ203+1.013; provable; 4
+SYJ203+1.014; provable; 4
+SYJ203+1.015; provable; 4
+SYJ203+1.016; provable; 4
+SYJ203+1.017; provable; 5
+SYJ203+1.018; provable; 5
+SYJ203+1.019; provable; 6
+SYJ203+1.020; provable; 7
+SYJ204+1.001; provable; 2
+SYJ204+1.002; provable; 3
+SYJ204+1.003; provable; 3
+SYJ204+1.004; provable; 3
+SYJ204+1.005; provable; 4
+SYJ204+1.006; provable; 6
+SYJ204+1.007; provable; 9
+SYJ204+1.008; provable; 16
+SYJ204+1.009; provable; 32
+SYJ204+1.010; provable; 64
+SYJ204+1.011; provable; 153
+SYJ204+1.012; provable; 326
+SYJ204+1.013; provable; 693
+SYJ204+1.014; provable; 1456
+SYJ204+1.015; provable; 3034
+SYJ204+1.016; provable; 6488
+SYJ204+1.017; provable; 13466
+SYJ204+1.018; provable; 31826
+SYJ204+1.019; provable; 67245
+SYJ204+1.020; unknown; timeout (600)
+SYJ205+1.001; provable; 3
+SYJ205+1.002; provable; 3
+SYJ205+1.003; provable; 3
+SYJ205+1.004; provable; 3
+SYJ205+1.005; provable; 3
+SYJ205+1.006; provable; 3
+SYJ205+1.007; provable; 3
+SYJ205+1.008; provable; 3
+SYJ205+1.009; provable; 3
+SYJ205+1.010; provable; 3
+SYJ205+1.011; provable; 3
+SYJ205+1.012; provable; 4
+SYJ205+1.013; provable; 4
+SYJ205+1.014; provable; 4
+SYJ205+1.015; provable; 4
+SYJ205+1.016; provable; 5
+SYJ205+1.017; provable; 5
+SYJ205+1.018; provable; 5
+SYJ205+1.019; provable; 5
+SYJ205+1.020; provable; 6
+SYJ206+1.001; provable; 2
+SYJ206+1.002; provable; 3
+SYJ206+1.003; provable; 3
+SYJ206+1.004; provable; 3
+SYJ206+1.005; provable; 4
+SYJ206+1.006; provable; 6
+SYJ206+1.007; provable; 9
+SYJ206+1.008; provable; 15
+SYJ206+1.009; provable; 28
+SYJ206+1.010; provable; 56
+SYJ206+1.011; provable; 109
+SYJ206+1.012; provable; 222
+SYJ206+1.013; provable; 440
+SYJ206+1.014; provable; 889
+SYJ206+1.015; provable; 1791
+SYJ206+1.016; provable; 3584
+SYJ206+1.017; provable; 7241
+SYJ206+1.018; provable; 14617
+SYJ206+1.019; provable; 29222
+SYJ206+1.020; provable; 59058
+SYJ207+1.001; unprovable; 3
+SYJ207+1.002; unprovable; 4
+SYJ207+1.003; unprovable; 23
+SYJ207+1.004; unprovable; 240
+SYJ207+1.005; unprovable; 3146
+SYJ207+1.006; unprovable; 48003
+SYJ207+1.007; unknown; timeout (600)
+SYJ207+1.008; unknown; timeout (600)
+SYJ207+1.009; unknown; timeout (600)
+SYJ207+1.010; unknown; timeout (600)
+SYJ207+1.011; unknown; timeout (600)
+SYJ207+1.012; unknown; timeout (600)
+SYJ207+1.013; unknown; timeout (600)
+SYJ207+1.014; unknown; timeout (600)
+SYJ207+1.015; unknown; timeout (600)
+SYJ207+1.016; unknown; timeout (600)
+SYJ207+1.017; unknown; timeout (600)
+SYJ207+1.018; unknown; timeout (600)
+SYJ207+1.019; unknown; timeout (600)
+SYJ207+1.020; unknown; timeout (600)
+SYJ208+1.001; unprovable; 3
+SYJ208+1.002; unprovable; 11
+SYJ208+1.003; unprovable; 2769
+SYJ208+1.004; unknown; timeout (600)
+SYJ208+1.005; unknown; timeout (600)
+SYJ208+1.006; unknown; timeout (600)
+SYJ208+1.007; unknown; timeout (600)
+SYJ208+1.008; unknown; timeout (600)
+SYJ208+1.009; unknown; timeout (600)
+SYJ208+1.010; unknown; timeout (600)
+SYJ208+1.011; unknown; timeout (600)
+SYJ208+1.012; unknown; timeout (600)
+SYJ208+1.013; unknown; timeout (600)
+SYJ208+1.014; unknown; timeout (600)
+SYJ208+1.015; unknown; timeout (600)
+SYJ208+1.016; unknown; timeout (600)
+SYJ208+1.017; unknown; timeout (600)
+SYJ208+1.018; unknown; timeout (600)
+SYJ208+1.019; unknown; timeout (600)
+SYJ208+1.020; unknown; timeout (600)
+SYJ209+1.001; unprovable; 3
+SYJ209+1.002; unprovable; 3
+SYJ209+1.003; unprovable; 3
+SYJ209+1.004; unprovable; 6
+SYJ209+1.005; unprovable; 20
+SYJ209+1.006; unprovable; 112
+SYJ209+1.007; unprovable; 845
+SYJ209+1.008; unprovable; 7158
+SYJ209+1.009; unprovable; 68477
+SYJ209+1.010; unknown; timeout (600)
+SYJ209+1.011; unknown; timeout (600)
+SYJ209+1.012; unknown; timeout (600)
+SYJ209+1.013; unknown; timeout (600)
+SYJ209+1.014; unknown; timeout (600)
+SYJ209+1.015; unknown; timeout (600)
+SYJ209+1.016; unknown; timeout (600)
+SYJ209+1.017; unknown; timeout (600)
+SYJ209+1.018; unknown; timeout (600)
+SYJ209+1.019; unknown; timeout (600)
+SYJ209+1.020; unknown; timeout (600)
+SYJ210+1.001; unprovable; 3
+SYJ210+1.002; unprovable; 3
+SYJ210+1.003; unprovable; 3
+SYJ210+1.004; unprovable; 3
+SYJ210+1.005; unprovable; 3
+SYJ210+1.006; unprovable; 3
+SYJ210+1.007; unprovable; 3
+SYJ210+1.008; unprovable; 3
+SYJ210+1.009; unprovable; 3
+SYJ210+1.010; unprovable; 4
+SYJ210+1.011; unprovable; 4
+SYJ210+1.012; unprovable; 4
+SYJ210+1.013; unprovable; 4
+SYJ210+1.014; unprovable; 5
+SYJ210+1.015; unprovable; 5
+SYJ210+1.016; unprovable; 5
+SYJ210+1.017; unprovable; 6
+SYJ210+1.018; unprovable; 7
+SYJ210+1.019; unprovable; 7
+SYJ210+1.020; unprovable; 7
+SYJ211+1.001; unprovable; 3
+SYJ211+1.002; unprovable; 3
+SYJ211+1.003; unprovable; 5
+SYJ211+1.004; unprovable; 16
+SYJ211+1.005; unprovable; 88
+SYJ211+1.006; unprovable; 690
+SYJ211+1.007; unprovable; 5930
+SYJ211+1.008; unprovable; 59363
+SYJ211+1.009; unknown; timeout (600)
+SYJ211+1.010; unknown; timeout (600)
+SYJ211+1.011; unknown; timeout (600)
+SYJ211+1.012; unknown; timeout (600)
+SYJ211+1.013; unknown; timeout (600)
+SYJ211+1.014; unknown; timeout (600)
+SYJ211+1.015; unknown; timeout (600)
+SYJ211+1.016; unknown; timeout (600)
+SYJ211+1.017; unknown; timeout (600)
+SYJ211+1.018; unknown; timeout (600)
+SYJ211+1.019; unknown; timeout (600)
+SYJ211+1.020; unknown; timeout (600)
+SYJ212+1.001; unprovable; 3
+SYJ212+1.002; unprovable; 3
+SYJ212+1.003; unprovable; 3
+SYJ212+1.004; unprovable; 3
+SYJ212+1.005; unprovable; 3
+SYJ212+1.006; unprovable; 3
+SYJ212+1.007; unprovable; 3
+SYJ212+1.008; unprovable; 3
+SYJ212+1.009; unprovable; 3
+SYJ212+1.010; unprovable; 3
+SYJ212+1.011; unprovable; 3
+SYJ212+1.012; unprovable; 3
+SYJ212+1.013; unprovable; 3
+SYJ212+1.014; unprovable; 3
+SYJ212+1.015; unprovable; 3
+SYJ212+1.016; unprovable; 3
+SYJ212+1.017; unprovable; 3
+SYJ212+1.018; unprovable; 3
+SYJ212+1.019; unprovable; 4
+SYJ212+1.020; unprovable; 4

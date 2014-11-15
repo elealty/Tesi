@@ -1,17 +1,17 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
  * @author eleonora
- * 
  */
 public class SqlLiteDb {
 
-    static Connection conn = null;
-    static Statement stmt = null;
-    static String database_name = "";
+    static Connection conn          = null;
+    static Statement  stmt          = null;
+    static String     database_name = "";
 
     public static void openDb(String db_name) {
         System.out.println("Try to open db " + db_name);
@@ -32,8 +32,7 @@ public class SqlLiteDb {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            conn = DriverManager
-                    .getConnection("jdbc:sqlite:"+db_name);
+            conn = DriverManager.getConnection("jdbc:sqlite:" + db_name);
             System.out.println("Opened database successfully");
 
             stmt = conn.createStatement();
@@ -66,41 +65,32 @@ public class SqlLiteDb {
     }
 
     public static void insertTheoremRow(String name, int provable, int success,
-            int executionTime) {
-        System.out.println("insertTheoremRow data");
-        try {
-            if (conn.isClosed() == true) {
-                System.out.println("Connection closed, be reopen");
-                conn = DriverManager
-                        .getConnection("jdbc:sqlite:"+database_name);
-            }
-            stmt = conn.createStatement();
-            String sql = "INSERT OR REPLACE into THEOREM_INFO"
-                    + " (name, provable, success, execution_time) VALUES("
-                    + "'" + name + "'," + provable + "," + success + ","
-                    + executionTime + " )";
-            stmt.execute(sql);
-        } catch (Exception e) {
-            System.err.println("ERRORE insertTheoremRow"
-                    + e.getClass().getName() + ": " + e.getMessage());
+            int executionTime) throws SQLException {
+
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
+        stmt = conn.createStatement();
+        String sql = "INSERT OR REPLACE into THEOREM_INFO"
+                + " (name, provable, success, execution_time) VALUES(" + "'"
+                + name + "'," + provable + "," + success + "," + executionTime
+                + " )";
+        System.out.println("insertTheoremRow sql:" + sql);
+        stmt.execute(sql);
     }
 
-    public static ResultSet getTheoremWithMaxExecution() {
+    public static ResultSet getTheoremProvableWithMaxExecution() {
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT name, max(execution_time) as max_execution from theorem_info";
+            String sql = "SELECT name, max(execution_time) as max_execution FROM theorem_info";
             ResultSet res = stmt.executeQuery(sql);
             return res;
-            //while (res.next()) {
-            //    System.out.println("THEOREM WITH MAX EXECUTION:"
-            //            + res.getString("name") + "TIME:"
-            //            + res.getInt("max_execution") + " ms");
-           // }
+
         } catch (Exception e) {
-            System.err.println("ERRORE getTheoremWithMaxExecution : "
+            System.err.println("ERRORE getTheoremProvableWithMaxExecution : "
                     + e.getMessage());
         }
-		return null;
+        return null;
     }
 }
