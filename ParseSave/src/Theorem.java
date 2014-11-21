@@ -1,3 +1,10 @@
+/**
+ * Returns class that represent Theorem object. the screen, the data will be
+ * loaded. The graphics primitives that draw the image will incrementally paint
+ * on the screen.
+ *
+ * @see Theorem
+ */
 public class Theorem {
 
     public int    id;
@@ -15,6 +22,15 @@ public class Theorem {
         this.id = id;
     }
 
+    /**
+     * Return Theorem class parsing Nbu file row.
+     * 
+     * @param strTheorem
+     *            represent file row
+     * @param execution
+     *            represent the execution time of the theorem
+     * @return theorem from Nbu file
+     */
     public static Theorem getTheoremFromNbuString(String strTheorem,
             String execution) {
 
@@ -23,22 +39,27 @@ public class Theorem {
                 .replace(" ", "").split(",");
         String name = tValues[0].replace(" ", "");
 
-        boolean isProvable = (tValues[1] == "PROVABLE");
-        boolean isSuccess = (tValues[2] == "SUCCESS");
+        boolean isProvable = (tValues[1].trim().equals("PROVABLE"));
+        boolean isSuccess = (tValues[2].trim().equals("SUCCESS"));
         int timeExecution = Integer.parseInt(exValues[0]);
 
         return new Theorem(name, isProvable, isSuccess, timeExecution, -1);
 
     }
 
+    /**
+     * Return Theorem class parsing Fcube file row.
+     * 
+     * @param strTheorem
+     *            represent file row
+     * @param execution
+     *            represent the execution time of the theorem
+     * @return theorem from Fcube file
+     */
     public static Theorem getTheoremFromFcubeString(String[] strTheorem) {
-        System.out.println("GET TH FROMFCUBE" + strTheorem[0] + " - "
-                + strTheorem[1]);
         String name = strTheorem[0].replace(" ", "");
-        System.out.println("=== t provable:" + strTheorem[1].trim() + " - "
-                + strTheorem[1].equals("provable"));
-        System.out.println(((Object) strTheorem[1]).getClass().getName());
-        boolean isProvable = strTheorem[1].trim() == "provable";
+
+        boolean isProvable = (strTheorem[1].trim().equals("provable"));
         boolean isSuccess = true;
         String time = strTheorem[2].trim();
         int timeExecution = 0;

@@ -9,6 +9,17 @@ public class Parser {
     static String NBU_HEADER   = "*";
     static String FCUBE_HEADER = "%";
 
+    /**
+     * Riceve il file da processare. Controlla le prime righe di intestazione
+     * per capire quale sia il formato del file e quindi richiama la
+     * corrispondente funzione di parsing
+     * 
+     * @param file
+     *            File da processare
+     * @throws IOException
+     *             se non riesce a leggere il file
+     */
+
     public static void processFile(File file) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(
                 new FileInputStream(file)));
@@ -22,6 +33,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Parser tracciato fileFcube. Legge riga per riga e scrive nel database
+     * 
+     * @param file
+     * @throws IOException
+     */
     private static void parseFcubeProverFile(File file) throws IOException {
 
         FileInputStream fstream = new FileInputStream(file);
@@ -51,6 +68,11 @@ public class Parser {
         br.close();
     }
 
+    /**
+     * Parser tracciato Nbu Legge riga per riga e scrive nel database
+     * 
+     * @param file
+     */
     private static void parseNbuProverFile(File file) {
         try {
             FileInputStream fstream = new FileInputStream(file);
@@ -71,15 +93,18 @@ public class Parser {
                 String[] lineInfo = strLine.split(";");
                 Theorem parsedTheorem = Theorem.getTheoremFromNbuString(
                         lineInfo[0], lineInfo[1]);
-
-                SqlLiteDb.insertTheoremRow(parsedTheorem.name,
-                        parsedTheorem.provable, parsedTheorem.success,
-                        parsedTheorem.execution_time);
+                try {
+                    SqlLiteDb.insertTheoremRow(parsedTheorem.name,
+                            parsedTheorem.provable, parsedTheorem.success,
+                            parsedTheorem.execution_time);
+                } catch (SQLException e) {
+                    System.out.println("Errore durante la scrittura riga"
+                            + "nel database");
+                    e.printStackTrace();
+                }
             }
             br.close();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
             e.printStackTrace();
         }
     };
