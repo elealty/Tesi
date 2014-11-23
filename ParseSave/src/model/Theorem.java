@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Returns class that represent Theorem object. the screen, the data will be
  * loaded. The graphics primitives that draw the image will incrementally paint
@@ -6,7 +8,6 @@
  * @see Theorem
  */
 public class Theorem {
-
     public int    id;
     public String name;
     public int    provable;

@@ -1,3 +1,5 @@
+package parser;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -5,7 +7,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 
-public class Parser {
+import model.Theorem;
+import dbconnection.SqlLiteDb;
+
+public class TheoremParser {
     static String NBU_HEADER   = "*";
     static String FCUBE_HEADER = "%";
 
@@ -21,6 +26,7 @@ public class Parser {
      */
 
     public static void processFile(File file) throws IOException {
+        System.out.println("PROCESS FILE");
         BufferedReader br = new BufferedReader(new InputStreamReader(
                 new FileInputStream(file)));
         String firstLine = br.readLine();
@@ -34,7 +40,7 @@ public class Parser {
     }
 
     /**
-     * Parser tracciato fileFcube. Legge riga per riga e scrive nel database
+     * TheoremParser tracciato fileFcube. Legge riga per riga e scrive nel database
      * 
      * @param file
      * @throws IOException
@@ -69,7 +75,7 @@ public class Parser {
     }
 
     /**
-     * Parser tracciato Nbu Legge riga per riga e scrive nel database
+     * TheoremParser tracciato Nbu Legge riga per riga e scrive nel database
      * 
      * @param file
      */
