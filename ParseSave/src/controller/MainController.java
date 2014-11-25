@@ -87,6 +87,20 @@ public class MainController implements Initializable {
         }
     }
 
+    @FXML
+    protected void handleTheoremListAction(ActionEvent event)
+            throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
+                "/view/ListTheorems.fxml"));
+        Pane cmdPane = (Pane) fxmlLoader.load();
+
+        try {
+            mainBorder.setCenter(cmdPane);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 

@@ -18,11 +18,12 @@
         <Menu mnemonicParsing="false" text="Machines">
           <items>
             <MenuItem id="listMachine" mnemonicParsing="false" onAction="#handleMachineListAction" text="List" />
-                  <MenuItem id="listMachine" mnemonicParsing="false" onAction="#handleMachineAction" text="Add" />
+            <MenuItem id="addMachine" mnemonicParsing="false" onAction="#handleMachineAction" text="Add" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Theorem">
           <items>
+            <MenuItem  id="listTheorem" mnemonicParsing="false" onAction="#handleTheoremListAction" text="List" />
             <MenuItem mnemonicParsing="false" onAction="#handleTheoremAction" text="Upload" />
           </items>
         </Menu>

@@ -95,6 +95,24 @@ public class SqlLiteDb {
         return null;
     }
 
+    public static ResultSet getAllTheorems() throws SQLException {
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT id, name, provable, execution_time, success FROM theorem_info limit 10";
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err.println("ERRORE getAllTheorems : " + e.getMessage());
+        }
+        return null;
+    }
+
     public static ResultSet getAllMachines() throws SQLException {
         if (conn.isClosed() == true) {
             System.out.println("Connection closed, be reopen");

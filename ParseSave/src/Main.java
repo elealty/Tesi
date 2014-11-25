@@ -34,13 +34,10 @@ public class Main extends Application {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(
                     "view/RootLayout.fxml"));
-            Parent machineScreen = FXMLLoader.load(getClass().getResource(
-                    "view/AddMachine.fxml"));
-            screens.put("root", new Scene(root));
-            screens.put("machine", new Scene(machineScreen));
+            Scene scene = new Scene(root);
 
             stage.setTitle("Theorems");
-            stage.setScene(screens.get("root"));
+            stage.setScene(scene);
             stage.show();
 
         } catch (IOException e) {

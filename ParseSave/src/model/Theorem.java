@@ -1,5 +1,8 @@
 package model;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * Returns class that represent Theorem object. the screen, the data will be
  * loaded. The graphics primitives that draw the image will incrementally paint
@@ -70,5 +73,9 @@ public class Theorem {
 
         return new Theorem(name, isProvable, isSuccess, timeExecution, -1);
 
+    }
+
+    public StringProperty nameProperty() {
+        return new SimpleStringProperty(name);
     }
 }
