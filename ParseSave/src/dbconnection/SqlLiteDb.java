@@ -103,7 +103,7 @@ public class SqlLiteDb {
 
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT id, name, provable, execution_time, success FROM theorem_info limit 10";
+            String sql = "SELECT id, name, provable, execution_time as execution, success FROM theorem_info";
             ResultSet res = stmt.executeQuery(sql);
             return res;
 

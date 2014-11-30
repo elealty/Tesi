@@ -1,31 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
 <?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
- 
-<?import fxmltableview.*?> 
+<?import fxmltableview.*?>
 
-
-<GridPane alignment="CENTER" hgap="10.0" vgap="10.0"
-    xmlns:fx="http://javafx.com/fxml"
-    fx:controller="controller.TheoremListController">
+<GridPane alignment="CENTER" hgap="10.0" prefHeight="441.0" prefWidth="472.0" vgap="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TheoremListController">
     <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
-    <Label style="-fx-font: NORMAL 20 Tahoma;" text="Theorem's List"                
-        GridPane.columnIndex="0" GridPane.rowIndex="0">
+   <children>
+       <Label prefHeight="30.0" prefWidth="152.0" style="-fx-font: NORMAL 20 Tahoma;" text="Theorem's List">
     </Label>
-    <TableView fx:id="tableViewTheorems" GridPane.columnIndex="0" 
-        GridPane.rowIndex="1">
-        <columns>
-         <TableColumn prefWidth="75.0" text="ID" fx:id="colId" />
-         <TableColumn text="Name"/>
-         <TableColumn text="Provable"/>
-         <TableColumn text="Time"/>
-     </columns>   
-    </TableView>
+      <HBox prefHeight="40.0" prefWidth="452.0" GridPane.rowIndex="1">
+         <children>
+            <Label contentDisplay="BOTTOM" text="Search:" />
+            <TextField id="filterField" />
+         </children>
+      </HBox>
+       <TableView fx:id="tableViewTheorems" prefHeight="387.0" prefWidth="458.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+           <columns>
+            <TableColumn fx:id="itemIdCol" prefWidth="35.0" text="ID" />
+            <TableColumn fx:id="itemNameCol" prefWidth="127.0" text="Name" />
+            <TableColumn fx:id="itemProvableCol" prefWidth="95.0" text="Provable" />
+            <TableColumn fx:id="itemExecutionCol" prefWidth="135.0" text="ExecutionTime" />
+        </columns>   
+       </TableView>
+   </children>
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints minHeight="30.0" prefHeight="30.0" />
+      <RowConstraints fillHeight="false" minHeight="30.0" />
+      <RowConstraints />
+   </rowConstraints>
 </GridPane>
