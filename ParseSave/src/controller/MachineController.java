@@ -9,7 +9,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import model.MachineTable;
 import dbconnection.SqlLiteDb;
 
 /**
@@ -17,21 +20,41 @@ import dbconnection.SqlLiteDb;
  */
 public class MachineController implements Initializable {
     @FXML
-    private TableView<String> tableViewMachines;
+    private TableView<MachineTable>      tableViewMachines;
+    private ObservableList<MachineTable> mData = FXCollections
+                                                       .observableArrayList();
+
+    @FXML
+    TableColumn<MachineTable, Integer>   itemIdCol;
+    @FXML
+    TableColumn<MachineTable, String>    itemNameCol;
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle arg1) {
+        tableViewMachines.setItems(getMachinesData());
+
+        itemIdCol
+                .setCellValueFactory(new PropertyValueFactory<MachineTable, Integer>(
+                        "id"));
+        itemNameCol
+                .setCellValueFactory(new PropertyValueFactory<MachineTable, String>(
+                        "name"));
+
+    }
+
+    public ObservableList<MachineTable> getMachinesData() {
         try {
             ResultSet mr = SqlLiteDb.getAllMachines();
-            ObservableList<String> data = FXCollections.observableArrayList();
             while (mr.next()) {
-                data.add(mr.getString("name"));
-            }
+                MachineTable m = new MachineTable(mr.getInt("id"),
+                        mr.getString("name"));
 
-            tableViewMachines.setItems(data);
+                mData.add(m);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return mData;
     }
 }

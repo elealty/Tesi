@@ -12,6 +12,7 @@ public class TheoremTable {
     private final StringProperty  name;
     private final IntegerProperty execution;
     private final BooleanProperty provable;
+    private final StringProperty  family;
 
     /**
      * Constructor with some initial data.
@@ -21,11 +22,12 @@ public class TheoremTable {
      * @param lastName
      */
     public TheoremTable(Integer id, String name, Integer execution,
-            Integer provable) {
+            Integer provable, String family) {
         this.id = new SimpleIntegerProperty(id);
         this.name = new SimpleStringProperty(name);
         this.execution = new SimpleIntegerProperty(execution);
         this.provable = new SimpleBooleanProperty((provable == 1));
+        this.family = new SimpleStringProperty(family);
 
     }
 
@@ -37,20 +39,20 @@ public class TheoremTable {
         this.name.set(Name);
     }
 
-    public int getExcution() {
-        return execution.get();
-    }
-
-    public void setExcution(Integer execution) {
-        this.execution.set(execution);
-    }
-
     public int getId() {
         return id.get();
     }
 
     public boolean getProvable() {
         return provable.get();
+    }
+
+    public String getFamily() {
+        return family.get();
+    }
+
+    public Integer getExecution() {
+        return execution.get();
     }
 
 }

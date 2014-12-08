@@ -21,9 +21,9 @@
     </Label>
     <TableView fx:id="tableViewMachines" GridPane.columnIndex="0" 
         GridPane.rowIndex="1">
-        <columns>
-         <TableColumn text="Name">
-          </TableColumn>
+          <columns>
+            <TableColumn fx:id="itemIdCol" prefWidth="35.0" text="ID" />
+            <TableColumn fx:id="itemNameCol" text="Name" />
      </columns>   
     </TableView>
 </GridPane>

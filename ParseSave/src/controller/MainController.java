@@ -6,20 +6,15 @@ import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 public class MainController implements Initializable {
-    @FXML
-    private Button     button;
-
     @FXML
     private MenuBar    appMenuBar;
 
@@ -28,16 +23,6 @@ public class MainController implements Initializable {
 
     @FXML
     private AnchorPane centerAnchor;
-
-    @FXML
-    protected void initialize() {
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("You clicked me!");
-            }
-        });
-    }
 
     @FXML
     private void handleMenuCloseAction(ActionEvent event) {

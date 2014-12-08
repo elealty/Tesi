@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="mainBorder" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<BorderPane fx:id="mainBorder" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
   <top>
     <MenuBar fx:id="appMenuBar">
       <menus>
@@ -23,7 +23,7 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Theorem">
           <items>
-            <MenuItem  id="listTheorem" mnemonicParsing="false" onAction="#handleTheoremListAction" text="List" />
+            <MenuItem id="listTheorem" mnemonicParsing="false" onAction="#handleTheoremListAction" text="List" />
             <MenuItem mnemonicParsing="false" onAction="#handleTheoremAction" text="Upload" />
           </items>
         </Menu>

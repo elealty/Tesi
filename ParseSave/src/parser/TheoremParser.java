@@ -40,7 +40,8 @@ public class TheoremParser {
     }
 
     /**
-     * TheoremParser tracciato fileFcube. Legge riga per riga e scrive nel database
+     * TheoremParser tracciato fileFcube. Legge riga per riga e scrive nel
+     * database
      * 
      * @param file
      * @throws IOException
@@ -63,7 +64,7 @@ public class TheoremParser {
             try {
                 SqlLiteDb.insertTheoremRow(parsedTheorem.name,
                         parsedTheorem.provable, parsedTheorem.success,
-                        parsedTheorem.execution_time);
+                        parsedTheorem.execution_time, "SYJ");
             } catch (Exception e) {
                 System.err.println("ERRORE insertTheoremRow"
                         + e.getClass().getName() + ": " + e.getMessage());
@@ -102,7 +103,7 @@ public class TheoremParser {
                 try {
                     SqlLiteDb.insertTheoremRow(parsedTheorem.name,
                             parsedTheorem.provable, parsedTheorem.success,
-                            parsedTheorem.execution_time);
+                            parsedTheorem.execution_time, "SYJ");
                 } catch (SQLException e) {
                     System.out.println("Errore durante la scrittura riga"
                             + "nel database");

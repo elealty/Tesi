@@ -33,6 +33,8 @@ public class TheoremListController implements Initializable {
     @FXML
     TableColumn<TheoremTable, Integer>   itemIdCol;
     @FXML
+    TableColumn<TheoremTable, String>    itemFamilyCol;
+    @FXML
     TableColumn<TheoremTable, String>    itemNameCol;
     @FXML
     TableColumn<TheoremTable, Integer>   itemExecutionCol;
@@ -46,6 +48,9 @@ public class TheoremListController implements Initializable {
         itemIdCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, Integer>(
                         "id"));
+        itemFamilyCol
+                .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
+                        "family"));
         itemNameCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
                         "name"));
@@ -80,7 +85,6 @@ public class TheoremListController implements Initializable {
         // System.out.println("TextField Text Changed (newValue: "
         // + newValue + ")");
         // });
-        System.out.println("listener");
         SortedList<TheoremTable> sortedData = new SortedList<>(filteredData);
         System.out.println("sortedData:" + sortedData);
         sortedData.comparatorProperty().bind(
@@ -95,7 +99,7 @@ public class TheoremListController implements Initializable {
             while (mr.next()) {
                 TheoremTable t = new TheoremTable(mr.getInt("id"),
                         mr.getString("name"), mr.getInt("execution"),
-                        mr.getInt("provable"));
+                        mr.getInt("provable"), mr.getString("family"));
                 tData.add(t);
             }
 
@@ -104,5 +108,4 @@ public class TheoremListController implements Initializable {
         }
         return tData;
     }
-
 }
