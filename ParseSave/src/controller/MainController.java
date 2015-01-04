@@ -86,6 +86,22 @@ public class MainController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleCompareTheoremAction(ActionEvent event)
+            throws IOException {
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
+                "/view/CompareCharts.fxml"));
+        Pane cmdPane = (Pane) fxmlLoader.load();
+
+        try {
+            mainBorder.setCenter(cmdPane);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 

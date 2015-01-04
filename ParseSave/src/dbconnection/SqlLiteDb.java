@@ -33,7 +33,6 @@ public class SqlLiteDb {
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
-            System.out.println("Opened database successfully");
 
             stmt = conn.createStatement();
 
@@ -52,7 +51,6 @@ public class SqlLiteDb {
                     + " SUCCESS        INTEGER    NOT NULL, "
                     + " EXECUTION_TIME INTEGER NOT NULL )";
             stmt.executeUpdate(sql);
-            System.out.println("THEOREM table created");
 
             stmt.close();
             conn.close();
@@ -66,12 +64,11 @@ public class SqlLiteDb {
     public static void insertTheoremRow(String name, String prover,
             int provable, int success, int executionTime, String family)
             throws SQLException {
-        System.out.println("INSERT THEOREM ROW");
         if (conn.isClosed() == true) {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
         stmt = conn.createStatement();
-        System.out.println("CREATE - SQL INSERT");
+
         String sql = "INSERT OR REPLACE into THEOREM"
                 + " (name, prover, provable, success, execution_time, family) VALUES("
                 + "'" + name + "','" + prover + "'," + provable + "," + success
@@ -81,7 +78,6 @@ public class SqlLiteDb {
     }
 
     public static ResultSet getTheoremProvableWithMaxExecution() {
-        System.out.println("getTheoremProvableWithMaxExecution");
         try {
             stmt = conn.createStatement();
             String sql = "SELECT name, max(execution_time) as max_execution FROM theorem";
@@ -112,6 +108,47 @@ public class SqlLiteDb {
         }
         return null;
     }
+
+    public static ResultSet getProvableTheorems() throws SQLException {
+        if (conn.isClosed() == true) {
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT  name, prover, execution_time as execution "
+                    + " FROM theorem WHERE provable = 1 AND execution_time < 5000";
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err
+                    .println("ERRORE getProvableTheorems : " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static ResultSet getTheoremsProverMaxTimes() throws SQLException {
+        if (conn.isClosed() == true) {
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT prover, max(execution_time) as max "
+                    + "FROM theorem GROUP BY prover";
+
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err.println("ERRORE getTheoremsProverMaxTimes : "
+                    + e.getMessage());
+        }
+        return null;
+    }
+
+    /******************************* MACHINES **********************************************/
 
     public static ResultSet getAllMachines() throws SQLException {
         if (conn.isClosed() == true) {

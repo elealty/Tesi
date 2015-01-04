@@ -6,9 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="mainBorder" minHeight="400.0" minWidth="600.0" prefHeight="400.0"
-maxHeight="Infinity" maxWidth="Infinity"  
-prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<BorderPane fx:id="mainBorder" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
   <top>
     <MenuBar fx:id="appMenuBar">
       <menus>
@@ -27,9 +25,17 @@ prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com
           <items>
             <MenuItem id="listTheorem" mnemonicParsing="false" onAction="#handleTheoremListAction" text="List" />
             <MenuItem mnemonicParsing="false" onAction="#handleTheoremAction" text="Upload" />
+            <MenuItem id="compareTheorem" mnemonicParsing="false" onAction="#handleCompareTheoremAction" text="Compare" />
           </items>
         </Menu>
       </menus>
     </MenuBar>
   </top>
+   <center>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <content>
+          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" />
+        </content>
+      </ScrollPane>
+   </center>
 </BorderPane>
