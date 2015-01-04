@@ -33,6 +33,7 @@ public class TheoremController implements Initializable {
     @FXML
     protected void uploadFileAction(ActionEvent event) throws SQLException {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose file with theorem to load");
         File file = fileChooser.showOpenDialog(new Stage());
 
         if (file != null) {

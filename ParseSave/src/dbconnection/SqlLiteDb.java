@@ -44,14 +44,15 @@ public class SqlLiteDb {
 
             System.out.println("MACHINE table created");
 
-            sql = "CREATE TABLE THEOREM_INFO"
+            sql = "CREATE TABLE THEOREM"
                     + "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                     + " NAME           CHAR(200)    NOT NULL,"
+                    + " PROVER         CHAR(200)    NOT NULL,"
                     + " PROVABLE       INTEGER    NOT NULL, "
                     + " SUCCESS        INTEGER    NOT NULL, "
                     + " EXECUTION_TIME INTEGER NOT NULL )";
             stmt.executeUpdate(sql);
-            System.out.println("THEOREM_INFO table created");
+            System.out.println("THEOREM table created");
 
             stmt.close();
             conn.close();
@@ -62,19 +63,19 @@ public class SqlLiteDb {
         System.out.println("Table created successfully");
     }
 
-    public static void insertTheoremRow(String name, int provable, int success,
-            int executionTime, String family) throws SQLException {
+    public static void insertTheoremRow(String name, String prover,
+            int provable, int success, int executionTime, String family)
+            throws SQLException {
         System.out.println("INSERT THEOREM ROW");
         if (conn.isClosed() == true) {
-            System.out.println("Connection closed, be reopen");
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
         stmt = conn.createStatement();
         System.out.println("CREATE - SQL INSERT");
-        String sql = "INSERT OR REPLACE into THEOREM_INFO"
-                + " (name, provable, success, execution_time, family) VALUES("
-                + "'" + name + "'," + provable + "," + success + ","
-                + executionTime + "," + family + " )";
+        String sql = "INSERT OR REPLACE into THEOREM"
+                + " (name, prover, provable, success, execution_time, family) VALUES("
+                + "'" + name + "','" + prover + "'," + provable + "," + success
+                + "," + executionTime + ",'" + family + "' )";
         System.out.println("insertTheoremRow sql:" + sql);
         stmt.execute(sql);
     }
@@ -83,9 +84,8 @@ public class SqlLiteDb {
         System.out.println("getTheoremProvableWithMaxExecution");
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT name, max(execution_time) as max_execution FROM theorem_info";
+            String sql = "SELECT name, max(execution_time) as max_execution FROM theorem";
             ResultSet res = stmt.executeQuery(sql);
-            System.out.println("MaxExecution" + res);
             return res;
 
         } catch (Exception e) {
@@ -103,7 +103,7 @@ public class SqlLiteDb {
 
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT id, name, provable, execution_time as execution, success, family FROM theorem_info";
+            String sql = "SELECT id, name, prover, provable, execution_time as execution, success, family FROM theorem";
             ResultSet res = stmt.executeQuery(sql);
             return res;
 

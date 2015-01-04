@@ -10,23 +10,20 @@
 <?import javafx.geometry.Insets?>
 <?import fxmltableview.*?>
 
-<GridPane alignment="CENTER" hgap="10.0" prefHeight="441.0" prefWidth="652.0" vgap="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TheoremListController">
+<GridPane alignment="CENTER" hgap="10.0" prefHeight="441.0" prefWidth="652.0" 
+maxHeight="Infinity" maxWidth="Infinity" vgap="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TheoremListController">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
    <children>
        <Label prefHeight="30.0" prefWidth="152.0" style="-fx-font: NORMAL 20 Tahoma;" text="Theorem's List">
     </Label>
-      <HBox prefHeight="40.0" prefWidth="452.0" GridPane.rowIndex="1">
-         <children>
-            <Label contentDisplay="BOTTOM" text="Search:" />
-            <TextField id="filterField" promptText="search theorem" />
-         </children>
-      </HBox>
        <TableView fx:id="tableViewTheorems" prefHeight="334.0" prefWidth="660.0" tableMenuButtonVisible="true" GridPane.columnIndex="0" GridPane.rowIndex="2">
            <columns>
-            <TableColumn fx:id="itemIdCol" prefWidth="35.0" />
+            <TableColumn fx:id="checked" maxWidth="34.0" minWidth="26.0" prefWidth="34.0" 
+            resizable="false" sortable="false"/>
             <TableColumn fx:id="itemFamilyCol" prefWidth="60.0" text="Family" />
+            <TableColumn fx:id="itemProverCol" prefWidth="60.0" text="Prover" />
             <TableColumn fx:id="itemNameCol" prefWidth="127.0" text="Name" />
             <TableColumn fx:id="itemProvableCol" prefWidth="95.0" text="Provable" />
             <TableColumn fx:id="itemExecutionCol" prefWidth="135.0" text="Execution (ms)" />

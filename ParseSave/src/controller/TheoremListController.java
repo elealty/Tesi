@@ -11,10 +11,14 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 import model.TheoremTable;
 import dbconnection.SqlLiteDb;
 
@@ -31,9 +35,11 @@ public class TheoremListController implements Initializable {
     private TextField                    filterField;
 
     @FXML
-    TableColumn<TheoremTable, Integer>   itemIdCol;
+    TableColumn<TheoremTable, Boolean>   checked;
     @FXML
     TableColumn<TheoremTable, String>    itemFamilyCol;
+    @FXML
+    TableColumn<TheoremTable, String>    itemProverCol;
     @FXML
     TableColumn<TheoremTable, String>    itemNameCol;
     @FXML
@@ -44,13 +50,22 @@ public class TheoremListController implements Initializable {
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle arg1) {
         tableViewTheorems.setItems(getTheoremData());
-
-        itemIdCol
-                .setCellValueFactory(new PropertyValueFactory<TheoremTable, Integer>(
-                        "id"));
+        tableViewTheorems.getSelectionModel().setSelectionMode(
+                SelectionMode.MULTIPLE);
+        checked.setEditable(true);
+        checked.setCellFactory(new Callback<TableColumn<TheoremTable, Boolean>, TableCell<TheoremTable, Boolean>>() {
+            @Override
+            public TableCell<TheoremTable, Boolean> call(
+                    TableColumn<TheoremTable, Boolean> arg0) {
+                return new CheckBoxTableCell<TheoremTable, Boolean>();
+            }
+        });
         itemFamilyCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
                         "family"));
+        itemProverCol
+                .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
+                        "prover"));
         itemNameCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
                         "name"));
@@ -97,12 +112,11 @@ public class TheoremListController implements Initializable {
         try {
             ResultSet mr = SqlLiteDb.getAllTheorems();
             while (mr.next()) {
-                TheoremTable t = new TheoremTable(mr.getInt("id"),
-                        mr.getString("name"), mr.getInt("execution"),
+                TheoremTable t = new TheoremTable(mr.getString("name"),
+                        mr.getString("prover"), mr.getInt("execution"),
                         mr.getInt("provable"), mr.getString("family"));
                 tData.add(t);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

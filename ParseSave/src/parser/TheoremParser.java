@@ -63,8 +63,9 @@ public class TheoremParser {
             Theorem parsedTheorem = Theorem.getTheoremFromFcubeString(lineInfo);
             try {
                 SqlLiteDb.insertTheoremRow(parsedTheorem.name,
-                        parsedTheorem.provable, parsedTheorem.success,
-                        parsedTheorem.execution_time, "SYJ");
+                        parsedTheorem.prover, parsedTheorem.provable,
+                        parsedTheorem.success, parsedTheorem.execution_time,
+                        "SYJ");
             } catch (Exception e) {
                 System.err.println("ERRORE insertTheoremRow"
                         + e.getClass().getName() + ": " + e.getMessage());
@@ -102,7 +103,8 @@ public class TheoremParser {
                         lineInfo[0], lineInfo[1]);
                 try {
                     SqlLiteDb.insertTheoremRow(parsedTheorem.name,
-                            parsedTheorem.provable, parsedTheorem.success,
+                            parsedTheorem.prover, parsedTheorem.provable,
+                            parsedTheorem.success,
                             parsedTheorem.execution_time, "SYJ");
                 } catch (SQLException e) {
                     System.out.println("Errore durante la scrittura riga"
