@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.chart.*?>
@@ -19,7 +20,7 @@
          <children>
             <BarChart fx:id="executionChart" title="Execution">
               <xAxis>
-                <CategoryAxis side="BOTTOM" />
+                <CategoryAxis focusTraversable="true" />
               </xAxis>
               <yAxis>
                 <NumberAxis label="time (ms)" side="LEFT" />
@@ -27,7 +28,7 @@
             </BarChart>
             <StackedBarChart fx:id="maxTimesGraph" title="Max times">
               <xAxis>
-                <CategoryAxis side="BOTTOM" />
+                <CategoryAxis blendMode="SRC_ATOP" side="BOTTOM" />
               </xAxis>
               <yAxis>
                 <NumberAxis label="time (ms)" side="RIGHT" tickUnit="1000.0" />

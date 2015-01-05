@@ -3,5 +3,6 @@
 	<classpathentry excluding="application/|app/|app/app/" kind="src" path="ParseSave/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="ParseSave/src/sqlite-jdbc-3.8.6.jar"/>
+	<classpathentry kind="lib" path="ParseSave/src/openjfx-dialogs-1.0.2.jar"/>
 	<classpathentry kind="output" path="ParseSave/bin"/>
 </classpath>

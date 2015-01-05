@@ -7,16 +7,22 @@ import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import model.TheoremTable;
 import dbconnection.SqlLiteDb;
 
@@ -33,8 +39,6 @@ public class TheoremListController implements Initializable {
     private TextField                    filterField;
 
     @FXML
-    TableColumn<TheoremTable, Boolean>   checked;
-    @FXML
     TableColumn<TheoremTable, String>    itemFamilyCol;
     @FXML
     TableColumn<TheoremTable, String>    itemProverCol;
@@ -50,20 +54,33 @@ public class TheoremListController implements Initializable {
         tableViewTheorems.setItems(getTheoremData());
         tableViewTheorems.getSelectionModel().setSelectionMode(
                 SelectionMode.MULTIPLE);
-        checked.setEditable(true);
-        checked.setCellFactory(new Callback<TableColumn<TheoremTable, Boolean>, TableCell<TheoremTable, Boolean>>() {
-            @Override
-            public TableCell<TheoremTable, Boolean> call(
-                    TableColumn<TheoremTable, Boolean> arg0) {
-                return new CheckBoxTableCell<TheoremTable, Boolean>();
-            }
-        });
+        tableViewTheorems.setEditable(true);
+
         itemFamilyCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
                         "family"));
         itemProverCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
                         "prover"));
+        itemProverCol.setCellFactory(column -> {
+            return new TableCell<TheoremTable, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        setAlignment(Pos.CENTER);
+                        setText(item.toString());
+                        if (item.compareTo("NBU") == 0) {
+                            setTextFill(Color.DARKCYAN);
+                        } else {
+                            setTextFill(Color.CORAL);
+                        }
+                    }
+                }
+            };
+        });
         itemNameCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
                         "name"));
@@ -73,7 +90,31 @@ public class TheoremListController implements Initializable {
         itemProvableCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, Boolean>(
                         "provable"));
+        itemProvableCol.setCellFactory(column -> {
+            return new TableCell<TheoremTable, Boolean>() {
+                @Override
+                protected void updateItem(Boolean item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        VBox vb = new VBox();
+                        vb.setAlignment(Pos.CENTER);
+                        if (item == false) {
+                            vb.getChildren().addAll(
+                                    new ImageView(
+                                            new Image("/images/false.png")));
+                        } else {
+                            vb.getChildren()
+                                    .addAll(new ImageView(new Image(
+                                            "/images/true.png")));
 
+                        }
+                        setGraphic(vb);
+                    }
+                }
+            };
+        });
     }
 
     public ObservableList<TheoremTable> getTheoremData() {
@@ -89,5 +130,29 @@ public class TheoremListController implements Initializable {
             e.printStackTrace();
         }
         return tData;
+    }
+
+    @FXML
+    protected void handleCompare(ActionEvent event) {
+
+        Alert alert = new Alert(AlertType.INFORMATION);
+        String message = "";
+        alert.setTitle("Theorem");
+        alert.setHeaderText("Theorem selected");
+
+        ObservableList<TheoremTable> selectedItems = tableViewTheorems
+                .getSelectionModel().getSelectedItems();
+        if (selectedItems.size() == 0) {
+            message = "No theorem selected to compare.";
+        }
+
+        for (TheoremTable t : selectedItems) {
+            System.out.println(t.getName());
+            message += t.getName() + ":" + t.getExecution() + "(ms) \n";
+        }
+        alert.setContentText(message);
+
+        alert.showAndWait();
+
     }
 }

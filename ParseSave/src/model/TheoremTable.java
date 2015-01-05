@@ -13,19 +13,6 @@ public class TheoremTable {
     private final IntegerProperty execution;
     private final BooleanProperty provable;
     private final StringProperty  family;
-    private SimpleBooleanProperty checked = new SimpleBooleanProperty(false);
-
-    public SimpleBooleanProperty checkedProperty() {
-        return this.checked;
-    }
-
-    public java.lang.Boolean getChecked() {
-        return this.checkedProperty().get();
-    }
-
-    public void setChecked(final java.lang.Boolean checked) {
-        this.checkedProperty().set(checked);
-    }
 
     /**
      * Constructor with some initial data.
@@ -41,7 +28,6 @@ public class TheoremTable {
         this.execution = new SimpleIntegerProperty(execution);
         this.provable = new SimpleBooleanProperty((provable == 1));
         this.family = new SimpleStringProperty(family);
-
     }
 
     public String getName() {
@@ -61,15 +47,15 @@ public class TheoremTable {
     }
 
     public boolean getProvable() {
-        return provable.get();
+        return this.provable.get();
     }
 
     public String getFamily() {
-        return family.get();
+        return this.family.get();
     }
 
     public Integer getExecution() {
-        return execution.get();
+        return this.execution.get();
     }
 
 }

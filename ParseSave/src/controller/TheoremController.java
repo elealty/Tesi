@@ -16,10 +16,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import parser.TheoremParser;
 import dbconnection.SqlLiteDb;
 
@@ -34,7 +37,8 @@ public class TheoremController implements Initializable {
     protected void uploadFileAction(ActionEvent event) throws SQLException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose file with theorem to load");
-        File file = fileChooser.showOpenDialog(new Stage());
+        File file = fileChooser
+                .showOpenDialog(new Stage(StageStyle.TRANSPARENT));
 
         if (file != null) {
             try {
@@ -43,16 +47,9 @@ public class TheoremController implements Initializable {
                 e2.printStackTrace();
             }
 
-            String max_result = "Tempo massimo teorema \n";
-            ResultSet res = SqlLiteDb.getTheoremProvableWithMaxExecution();
-
-            if (res != null) {
-                max_result += res.getString("name") + "TIME:"
-                        + res.getInt("max_execution") + " ms";
-            } else {
-                max_result = "Non e' stato possibile determinare il teorema massimo.";
-            }
-            theoremInfo.setText(max_result);
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Theorem");
+            alert.setHeaderText("Theorem file uploaded.");
         }
     }
 

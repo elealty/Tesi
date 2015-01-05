@@ -33,12 +33,12 @@ public class ChartController implements Initializable {
 
     private ObservableList<XYChart.Series<String, Integer>> maxChartData = FXCollections
                                                                                  .observableArrayList();
+    final double                                            SCALE_DELTA  = 1.1;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         executionChart.setData(getChartData());
         maxTimesGraph.setData(getMaxChartData());
-
     }
 
     private ObservableList<XYChart.Series<String, Integer>> getChartData() {
