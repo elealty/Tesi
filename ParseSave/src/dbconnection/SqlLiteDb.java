@@ -62,17 +62,17 @@ public class SqlLiteDb {
     }
 
     public static void insertTheoremRow(String name, String prover,
-            int provable, int success, int executionTime, String family)
-            throws SQLException {
+            int provable, int success, int executionTime, String family,
+            Integer machine_id) throws SQLException {
         if (conn.isClosed() == true) {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
         stmt = conn.createStatement();
 
         String sql = "INSERT OR REPLACE into THEOREM"
-                + " (name, prover, provable, success, execution_time, family) VALUES("
+                + " (name, prover, provable, success, execution_time, family, machine_id) VALUES("
                 + "'" + name + "','" + prover + "'," + provable + "," + success
-                + "," + executionTime + ",'" + family + "' )";
+                + "," + executionTime + ",'" + family + "'," + machine_id + ")";
         System.out.println("insertTheoremRow sql:" + sql);
         stmt.execute(sql);
     }
@@ -99,7 +99,10 @@ public class SqlLiteDb {
 
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT id, name, prover, provable, execution_time as execution, success, family FROM theorem";
+            String sql = "SELECT t.id,  t.name, prover, provable, execution_time as execution, "
+                    + "success, family, m.name as machine "
+                    + " FROM theorem t  LEFT JOIN machine m "
+                    + " ON m.id = t.machine_id";
             ResultSet res = stmt.executeQuery(sql);
             return res;
 

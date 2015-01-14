@@ -21,7 +21,7 @@
          <children>
              <TableView fx:id="tableViewTheorems" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="700.0" tableMenuButtonVisible="true" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
                   <columns>
-                        <TableColumn fx:id="checked" maxWidth="34.0" minWidth="26.0" prefWidth="34.0" resizable="false" sortable="false" />
+                        <TableColumn fx:id="itemMachineCol" minWidth="50.0" prefWidth="100.0" text="Machine" />
                         <TableColumn fx:id="itemFamilyCol" minWidth="50.0" prefWidth="100.0" text="Family" />
                         <TableColumn fx:id="itemProverCol" minWidth="60.0" prefWidth="100.0" text="Prover" />
                         <TableColumn fx:id="itemNameCol" prefWidth="127.0" text="Name" />

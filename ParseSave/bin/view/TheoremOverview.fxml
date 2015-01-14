@@ -14,17 +14,17 @@
   <children>
     <VBox id="VBox" alignment="CENTER" layoutX="-15.0" layoutY="-2.0" prefHeight="381.0" prefWidth="521.0" spacing="5.0">
       <children>
-        <Label alignment="TOP_LEFT" layoutX="100.0" prefHeight="15.0" prefWidth="228.0" text="THEOREM'S TIME" textFill="#378dd3">
+        <Label alignment="TOP_LEFT" layoutX="100.0" prefHeight="15.0" prefWidth="317.0" text="THEOREMS TIME'S UPLOAD" textFill="#378dd3">
                <font>
                   <Font size="17.0" />
                </font></Label>
-        <Label prefHeight="15.0" prefWidth="211.0" text="Machine" />
-        <ComboBox fx:id="machineCombo" layoutX="15.0" layoutY="33.0" prefHeight="25.0" prefWidth="207.0" promptText="Choose...">
+        <Label prefHeight="15.0" prefWidth="317.0" text="Machine" />
+        <ComboBox fx:id="machineCombo" layoutX="15.0" layoutY="33.0" prefHeight="25.0" prefWidth="313.0" promptText="Choose...">
                <tooltip>
                   <Tooltip text="machine where theorem was processed" />
                </tooltip></ComboBox>
-        <Button onAction="#uploadFileAction" text="Upload" />
-            <Label layoutX="102.0" layoutY="116.0" prefHeight="15.0" prefWidth="211.0" text="Upload results:" />
+        <Button fx:id="uploadButton" defaultButton="true" disable="true" onAction="#uploadFileAction" text="Upload" />
+            <Label layoutX="102.0" layoutY="116.0" prefHeight="15.0" prefWidth="353.0" text="Upload results:" />
         <Text fx:id="theoremInfo" wrappingWidth="215.0" />
     
         </children>

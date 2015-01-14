@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -48,6 +49,11 @@ public class TheoremListController implements Initializable {
     TableColumn<TheoremTable, Integer>   itemExecutionCol;
     @FXML
     TableColumn<TheoremTable, Boolean>   itemProvableCol;
+    @FXML
+    TableColumn<TheoremTable, String>    itemMachineCol;
+
+    @FXML
+    Button                               compareBtn;
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle arg1) {
@@ -87,6 +93,10 @@ public class TheoremListController implements Initializable {
         itemExecutionCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, Integer>(
                         "execution"));
+        itemMachineCol
+                .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
+                        "machine"));
+
         itemProvableCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, Boolean>(
                         "provable"));
@@ -115,6 +125,7 @@ public class TheoremListController implements Initializable {
                 }
             };
         });
+
     }
 
     public ObservableList<TheoremTable> getTheoremData() {
@@ -123,7 +134,8 @@ public class TheoremListController implements Initializable {
             while (mr.next()) {
                 TheoremTable t = new TheoremTable(mr.getString("name"),
                         mr.getString("prover"), mr.getInt("execution"),
-                        mr.getInt("provable"), mr.getString("family"));
+                        mr.getInt("provable"), mr.getString("family"),
+                        mr.getString("machine"));
                 tData.add(t);
             }
         } catch (SQLException e) {

@@ -25,7 +25,8 @@ public class TheoremParser {
      *             se non riesce a leggere il file
      */
 
-    public static void processFile(File file) throws IOException {
+    public static void processFile(File file, Integer machine_id)
+            throws IOException {
         System.out.println("PROCESS FILE");
         BufferedReader br = new BufferedReader(new InputStreamReader(
                 new FileInputStream(file)));
@@ -33,9 +34,9 @@ public class TheoremParser {
         br.close();
 
         if (firstLine.startsWith("*")) {
-            parseNbuProverFile(file);
+            parseNbuProverFile(file, machine_id);
         } else {
-            parseFcubeProverFile(file);
+            parseFcubeProverFile(file, machine_id);
         }
     }
 
@@ -46,7 +47,8 @@ public class TheoremParser {
      * @param file
      * @throws IOException
      */
-    private static void parseFcubeProverFile(File file) throws IOException {
+    private static void parseFcubeProverFile(File file, Integer machine_id)
+            throws IOException {
 
         FileInputStream fstream = new FileInputStream(file);
 
@@ -65,7 +67,7 @@ public class TheoremParser {
                 SqlLiteDb.insertTheoremRow(parsedTheorem.name,
                         parsedTheorem.prover, parsedTheorem.provable,
                         parsedTheorem.success, parsedTheorem.execution_time,
-                        "SYJ");
+                        "SYJ", machine_id);
             } catch (Exception e) {
                 System.err.println("ERRORE insertTheoremRow"
                         + e.getClass().getName() + ": " + e.getMessage());
@@ -81,7 +83,7 @@ public class TheoremParser {
      * 
      * @param file
      */
-    private static void parseNbuProverFile(File file) {
+    private static void parseNbuProverFile(File file, Integer machine_id) {
         try {
             FileInputStream fstream = new FileInputStream(file);
             System.out.println("Total file size to read (in bytes) : "
@@ -105,7 +107,7 @@ public class TheoremParser {
                     SqlLiteDb.insertTheoremRow(parsedTheorem.name,
                             parsedTheorem.prover, parsedTheorem.provable,
                             parsedTheorem.success,
-                            parsedTheorem.execution_time, "SYJ");
+                            parsedTheorem.execution_time, "SYJ", machine_id);
                 } catch (SQLException e) {
                     System.out.println("Errore durante la scrittura riga"
                             + "nel database");
