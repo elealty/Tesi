@@ -38,6 +38,7 @@ public class Main extends Application {
 
             stage.setTitle("Theorems");
             stage.setScene(scene);
+            stage.setMaximized(true);
             stage.show();
 
         } catch (IOException e) {

@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuBar;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
@@ -20,9 +19,6 @@ public class MainController implements Initializable {
 
     @FXML
     private BorderPane mainBorder;
-
-    @FXML
-    private AnchorPane centerAnchor;
 
     @FXML
     private void handleMenuCloseAction(ActionEvent event) {
