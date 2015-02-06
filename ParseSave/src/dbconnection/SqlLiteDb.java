@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 
 /**
@@ -16,7 +17,6 @@ public class SqlLiteDb {
     static String     database_name = "ParseSave/db/theorem.sqlite3";
 
     public static void openDb() {
-        System.out.println("Try to open db " + database_name);
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
@@ -29,7 +29,7 @@ public class SqlLiteDb {
 
     }
 
-    public static void createDbTables() {
+    private static void createDbTables() {
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
@@ -37,11 +37,13 @@ public class SqlLiteDb {
             stmt = conn.createStatement();
 
             String sql = "CREATE TABLE MACHINE "
-                    + "(ID INTEGER PRIMARY KEY AUTOINCREMENT     NOT NULL,"
-                    + " NAME           CHAR(200)    NOT NULL )";
+                    + "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+                    + " NAME           CHAR(200)    NOT NULL, "
+                    + " DESCRIPTION           CHAR(400)    )";
             stmt.executeUpdate(sql);
 
-            System.out.println("MACHINE table created");
+            sql = "CREATE UNIQUE INDEX \"unique_name\" on machine (NAME ASC)";
+            stmt.executeUpdate(sql);
 
             sql = "CREATE TABLE THEOREM"
                     + "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
@@ -49,7 +51,8 @@ public class SqlLiteDb {
                     + " PROVER         CHAR(200)    NOT NULL,"
                     + " PROVABLE       INTEGER    NOT NULL, "
                     + " SUCCESS        INTEGER    NOT NULL, "
-                    + " EXECUTION_TIME INTEGER NOT NULL )";
+                    + " EXECUTION_TIME INTEGER NOT NULL, " + "FAMILY TEXT, "
+                    + "MACHINE_ID INTEGER" + ")";
             stmt.executeUpdate(sql);
 
             stmt.close();
@@ -73,7 +76,7 @@ public class SqlLiteDb {
                 + " (name, prover, provable, success, execution_time, family, machine_id) VALUES("
                 + "'" + name + "','" + prover + "'," + provable + "," + success
                 + "," + executionTime + ",'" + family + "'," + machine_id + ")";
-        System.out.println("insertTheoremRow sql:" + sql);
+
         stmt.execute(sql);
     }
 
@@ -161,7 +164,7 @@ public class SqlLiteDb {
 
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT id, name FROM machine";
+            String sql = "SELECT id, name, description FROM machine";
             ResultSet res = stmt.executeQuery(sql);
             return res;
 
@@ -177,16 +180,104 @@ public class SqlLiteDb {
      * @param name
      * @throws SQLException
      */
-    public static void insertMachineRow(String name) throws SQLException {
-        System.out.println("INSERT MACHINE ROW");
+    public static void insertMachineRow(String name, String description)
+            throws SQLException, SQLIntegrityConstraintViolationException {
         if (conn.isClosed() == true) {
             System.out.println("Connection closed, be reopen");
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
         stmt = conn.createStatement();
-        String sql = "INSERT OR REPLACE into MACHINE" + " (name) VALUES('"
-                + name + "')";
+        String sql = "INSERT into MACHINE" + " (name, description) "
+                + " VALUES ('" + name + "','" + description + "')";
         System.out.println("insert machine sql:" + sql);
         stmt.execute(sql);
     }
+
+    /**
+     * Delete machine description
+     * 
+     * @param name
+     * @throws SQLException
+     */
+    public static void deleteMachineRow(Integer id) throws SQLException {
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+        stmt = conn.createStatement();
+        String sql = "DELETE FROM MACHINE WHERE id = " + id;
+        stmt.executeUpdate(sql);
+    }
+
+    /**
+     * Update machine name
+     * 
+     * @param name
+     * @throws SQLException
+     */
+    public static void updateMachineName(Integer id, String new_name)
+            throws SQLException {
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+        stmt = conn.createStatement();
+        String sql = "UPDATE MACHINE SET name = '" + new_name + "' WHERE id = "
+                + id;
+        stmt.executeUpdate(sql);
+    }
+
+    public static void updateMachineDescription(Integer id, String new_value)
+            throws SQLException {
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+        stmt = conn.createStatement();
+        String sql = "UPDATE MACHINE SET description = '" + new_value + "'"
+                + " WHERE id = " + id;
+        stmt.executeUpdate(sql);
+    }
+
+    public static void checkDbTables() throws SQLException {
+        System.out.println("checkDbTables");
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+        System.out.println("Try to select");
+        stmt = conn.createStatement();
+        try {
+            stmt.executeQuery("SELECT count(*) FROM machine");
+        } catch (SQLException e) {
+            createDbTables();
+        }
+
+    }
+
+    public static void deleteAllMachines() throws SQLException {
+        System.out.println("DELETE ALL MACHINE");
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+        stmt = conn.createStatement();
+        String sql = "DELETE FROM MACHINE";
+        System.out.println("DELETE machine sql:" + sql);
+        stmt.executeUpdate(sql);
+
+    }
+
+    public static void deleteAllTheorems() throws SQLException {
+        System.out.println("DELETE ALL THEOREM");
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+        stmt = conn.createStatement();
+        String sql = "DELETE FROM THEOREM";
+        stmt.executeUpdate(sql);
+
+    }
+
 }

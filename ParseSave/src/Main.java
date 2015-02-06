@@ -3,7 +3,7 @@
  */
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.sql.SQLException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,10 +15,11 @@ import dbconnection.SqlLiteDb;
 
 public class Main extends Application {
 
-    static TextArea                      log     = null;
-    Process                              p;
+    static TextArea log = null;
+    Process         p;
 
-    public static HashMap<String, Scene> screens = new HashMap<String, Scene>();
+    // public static HashMap<String, Scene> screens = new HashMap<String,
+    // Scene>();
 
     public static void main(String[] args) {
         initDb();
@@ -26,7 +27,13 @@ public class Main extends Application {
     }
 
     private static void initDb() {
-        SqlLiteDb.openDb();
+        try {
+            SqlLiteDb.openDb();
+            SqlLiteDb.checkDbTables();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

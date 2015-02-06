@@ -2,42 +2,41 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuBar;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import dbconnection.SqlLiteDb;
 
-public class MainController implements Initializable {
+public class MainController extends BaseController {
     @FXML
     private MenuBar    appMenuBar;
 
     @FXML
-    private BorderPane mainBorder;
+    private AnchorPane mainBorder;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            handleTheoremListAction(new ActionEvent());
+        } catch (IOException e) {
+            showErrorMessage(e.getMessage());
+        }
+    }
 
     @FXML
     private void handleMenuCloseAction(ActionEvent event) {
         Platform.exit();
-    }
-
-    @FXML
-    private void handleMachineAction(ActionEvent event) throws IOException {
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "/view/AddMachine.fxml"));
-        Pane cmdPane = (Pane) fxmlLoader.load();
-
-        try {
-            mainBorder.setCenter(cmdPane);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     @FXML
@@ -48,9 +47,10 @@ public class MainController implements Initializable {
         Pane cmdPane = (Pane) fxmlLoader.load();
 
         try {
-            mainBorder.setCenter(cmdPane);
+            mainBorder.getChildren().clear();
+            mainBorder.getChildren().add(cmdPane);
         } catch (Exception e) {
-            e.printStackTrace();
+            showErrorMessage(e.getMessage());
         }
 
     }
@@ -62,9 +62,10 @@ public class MainController implements Initializable {
         Pane cmdPane = (Pane) fxmlLoader.load();
 
         try {
-            mainBorder.setCenter(cmdPane);
+            mainBorder.getChildren().clear();
+            mainBorder.getChildren().add(cmdPane);
         } catch (Exception e) {
-            e.printStackTrace();
+            showErrorMessage(e.getMessage());
         }
     }
 
@@ -76,9 +77,10 @@ public class MainController implements Initializable {
         Pane cmdPane = (Pane) fxmlLoader.load();
 
         try {
-            mainBorder.setCenter(cmdPane);
+            mainBorder.getChildren().clear();
+            mainBorder.getChildren().add(cmdPane);
         } catch (Exception e) {
-            e.printStackTrace();
+            showErrorMessage(e.getMessage());
         }
     }
 
@@ -91,16 +93,47 @@ public class MainController implements Initializable {
         Pane cmdPane = (Pane) fxmlLoader.load();
 
         try {
-            mainBorder.setCenter(cmdPane);
+            mainBorder.getChildren().clear();
+            mainBorder.getChildren().add(cmdPane);
         } catch (Exception e) {
-            e.printStackTrace();
+            showErrorMessage(e.getMessage());
         }
 
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    @FXML
+    private void handleCleanTheoremAction(ActionEvent event) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirm");
+        alert.setHeaderText("Confirm operation");
+        alert.setContentText("This operation will delete all Theorem data: are you sure?");
 
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            try {
+                SqlLiteDb.deleteAllTheorems();
+                showInfoMessage("Clear all theorem", "All theorem deleted.");
+            } catch (SQLException e) {
+                showErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void handleCleanMachineAction(ActionEvent event) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirm");
+        alert.setHeaderText("Confirm operation");
+        alert.setContentText("This operation will delete all Machine data: are you sure?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            try {
+                SqlLiteDb.deleteAllMachines();
+            } catch (SQLException e) {
+                showErrorMessage(e.getMessage());
+            }
+        }
     }
 
 }

@@ -15,14 +15,39 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
    <children>
-       <Label prefHeight="13.0" prefWidth="226.0" style="-fx-font: NORMAL 20 Tahoma;" text="Machines List" GridPane.columnIndex="0" GridPane.rowIndex="0">
+       <Label prefHeight="13.0" prefWidth="226.0" style="-fx-font: NORMAL 20 Tahoma;" text="Machines" GridPane.columnIndex="0" GridPane.rowIndex="0">
     </Label>
-       <TableView fx:id="tableViewMachines" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="591.0" prefWidth="980.0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
-             <columns>
-               <TableColumn fx:id="itemIdCol" prefWidth="35.0" text="ID" />
-               <TableColumn fx:id="itemNameCol" text="Name" />
-        </columns>   
-       </TableView>
+       <VBox prefHeight="561.0" prefWidth="993.0" style="-: #000;" GridPane.rowIndex="1">
+   <children>
+      <HBox>
+         <children>
+            <TextField fx:id="machineName" layoutX="37.0" layoutY="68.0" prefHeight="25.0" prefWidth="220.0" promptText="name...">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+               <HBox.margin>
+                  <Insets bottom="10.0" right="10.0" />
+               </HBox.margin>
+            </TextField>
+            <TextField fx:id="machineDescription" prefHeight="25.0" prefWidth="220.0" promptText="description...">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </TextField>
+            <Button mnemonicParsing="false" onAction="#handleSaveAction" text="Add" />
+         </children>
+      </HBox> 
+      <TableView fx:id="tableViewMachines" editable="true" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0">
+            <columns>
+                 <TableColumn fx:id="itemNameCol" editable="true" minWidth="150.0" prefWidth="200.0" resizable="fals e" text="Name" />
+                <TableColumn fx:id="itemDescriptionCol" editable="true" minWidth="100.0" prefWidth="300.0" text ="Description" />
+       </columns>   
+     </TableView>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</VBox>
    </children>
    <columnConstraints>
       <ColumnConstraints />

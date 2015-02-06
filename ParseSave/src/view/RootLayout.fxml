@@ -1,37 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-
-<BorderPane fx:id="mainBorder" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
-  <top>
-    <MenuBar fx:id="appMenuBar" minHeight="-Infinity">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+  <children>
+    <MenuBar fx:id="appMenuBar" VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#handleMenuCloseAction" text="Close" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMenuCloseAction" text="Close" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Machines">
           <items>
             <MenuItem id="listMachine" mnemonicParsing="false" onAction="#handleMachineListAction" text="List" />
-            <MenuItem id="addMachine" mnemonicParsing="false" onAction="#handleMachineAction" text="Add" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Theorem">
           <items>
-            <MenuItem id="listTheorem" mnemonicParsing="false" onAction="#handleTheoremListAction" text="List / Compare" />
+            <MenuItem id="listTheorem" mnemonicParsing="false" onAction="#handleTheoremListAction" text="List" />
             <MenuItem id="compareTheorem" mnemonicParsing="false" onAction="#handleCompareTheoremAction" text="Charts" />
+            <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#handleTheoremAction" text="Upload" />
           </items>
         </Menu>
+            <Menu mnemonicParsing="false" text="Tools">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#handleCleanTheoremAction" text="Clean Theorem Table" />
+            <MenuItem mnemonicParsing="false" onAction="#handleCleanMachineAction" text="Clean Machine Table data" />
+              </items>
+            </Menu>
       </menus>
     </MenuBar>
-  </top>
-   <center>
-   </center>
-</BorderPane>
+     <AnchorPane fx:id="mainBorder" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+      </children>
+    </AnchorPane>
+</children>
+</VBox>
+
+

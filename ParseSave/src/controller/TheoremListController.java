@@ -9,7 +9,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -30,7 +29,7 @@ import dbconnection.SqlLiteDb;
 /**
  * @author eleonora
  */
-public class TheoremListController implements Initializable {
+public class TheoremListController extends BaseController {
     @FXML
     private TableView<TheoremTable>      tableViewTheorems;
 
@@ -98,9 +97,18 @@ public class TheoremListController implements Initializable {
                     } else {
                         setAlignment(Pos.CENTER);
                         setText(item.toString());
-                        if (item.compareTo("NBU") == 0) {
+                        switch (item) {
+                        case "NBU":
                             setTextFill(Color.DARKCYAN);
-                        } else {
+                        case "FCUBE":
+                            setTextFill(Color.AQUAMARINE);
+                        case "PNBU_GOGENBOTE":
+                            setTextFill(Color.CHOCOLATE);
+                        case "JNBU_DE":
+                            setTextFill(Color.CRIMSON);
+                        case "JNBU_DE_MIN":
+                            setTextFill(Color.FORESTGREEN);
+                        default:
                             setTextFill(Color.CORAL);
                         }
                     }

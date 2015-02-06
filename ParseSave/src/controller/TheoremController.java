@@ -5,58 +5,96 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.Window;
+import javafx.util.StringConverter;
 import model.Machine;
 import parser.TheoremParser;
 import dbconnection.SqlLiteDb;
 
-public class TheoremController implements Initializable {
+public class TheoremController extends BaseController {
     @FXML
     private Text                    theoremInfo;
 
     @FXML
     private ComboBox<Machine>       machineCombo;
-    private ObservableList<Machine> machineBoxData = FXCollections
-                                                           .observableArrayList();
+    private ObservableList<Machine> machineBoxData   = FXCollections
+                                                             .observableArrayList();
 
     @FXML
     Button                          uploadButton;
 
     @FXML
+    ProgressBar                     loadingIndicator = new ProgressBar(0);
+    Button                          button           = new Button(
+                                                             "Click me to start loading");
+    final ListView<String>          listView         = new ListView<String>();
+    List<File>                      listItems;
+
+    @FXML
     protected void uploadFileAction(ActionEvent actionEvent)
             throws SQLException {
+        Window chooserStage = machineCombo.getScene().getWindow();
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose file with theorem to load");
-        File file = fileChooser
-                .showOpenDialog(new Stage(StageStyle.TRANSPARENT));
+        fileChooser.setInitialDirectory(new File("ParseSave/time-example"));
 
-        if (file != null) {
-            try {
+        List<File> files = fileChooser.showOpenMultipleDialog(chooserStage);
+        loadingIndicator.setVisible(true);
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            public Void call() {
                 Integer machine_id = machineCombo.getValue().id;
-                TheoremParser.processFile(file, machine_id);
-            } catch (IOException e2) {
-                e2.printStackTrace();
+                long filesCount = (long) files.size();
+                for (File file : files) {
+                    try {
+                        TheoremParser.processFile(file, machine_id);
+                    } catch (IOException e) {
+                        loadingIndicator.setVisible(false);
+                        showErrorMessage(e.toString());
+                    }
+                    updateProgress((long) files.indexOf(file) + 1, filesCount);
+                }
+                return null;
             }
 
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Theorem");
-            alert.setHeaderText("Theorem file uploaded.");
-            theoremInfo.setText("Theorem file uploaded.");
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                updateMessage("Done!");
+                showInfoMessage("Upload complete", "All files loaded.");
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                updateMessage("Failed!");
+                showErrorMessage("Task to load files failed.");
+            }
+        };
+        loadingIndicator.progressProperty().bind(task.progressProperty());
+
+        if (!files.isEmpty()) {
+            Thread th = new Thread(task);
+            th.setDaemon(true);
+            th.start();
+
         }
     }
 
@@ -85,12 +123,30 @@ public class TheoremController implements Initializable {
             }
         });
 
+        // Define rendering of selected value shown in ComboBox.
+        machineCombo.setConverter(new StringConverter<Machine>() {
+            @Override
+            public String toString(Machine machine) {
+                if (machine == null) {
+                    return null;
+                } else {
+                    return machine.name;
+                }
+            }
+
+            @Override
+            public Machine fromString(String personString) {
+                return null; // No conversion fromString needed.
+            }
+        });
+
         try {
             ResultSet resAllMachines = SqlLiteDb.getAllMachines();
 
             while (resAllMachines.next()) {
                 machineBoxData.add(new Machine(resAllMachines.getInt("id"),
-                        resAllMachines.getString("name")));
+                        resAllMachines.getString("name"), resAllMachines
+                                .getString("description")));
             }
         } catch (SQLException e) {
             e.printStackTrace();

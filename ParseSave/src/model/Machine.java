@@ -10,10 +10,12 @@ package model;
 public class Machine {
     public int    id;
     public String name;
+    public String description;
 
-    public Machine(int id, String name) {
-        this.name = name;
+    public Machine(int id, String name, String description) {
         this.id = id;
+        this.name = name;
+        this.description = description;
     }
 
 }

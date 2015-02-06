@@ -12,7 +12,7 @@
     <URL value="@app.css" />
 </stylesheets>
   <children>
-    <VBox id="VBox" alignment="CENTER" layoutX="-15.0" layoutY="-2.0" prefHeight="381.0" prefWidth="521.0" spacing="5.0">
+    <VBox id="VBox" alignment="CENTER" layoutX="-15.0" layoutY="-2.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="381.0" prefWidth="521.0" spacing="5.0">
       <children>
         <Label alignment="TOP_LEFT" layoutX="100.0" prefHeight="15.0" prefWidth="317.0" text="THEOREMS TIME'S UPLOAD" textFill="#378dd3">
                <font>
@@ -23,9 +23,9 @@
                <tooltip>
                   <Tooltip text="machine where theorem was processed" />
                </tooltip></ComboBox>
-        <Button fx:id="uploadButton" defaultButton="true" disable="true" onAction="#uploadFileAction" text="Upload" />
-            <Label layoutX="102.0" layoutY="116.0" prefHeight="15.0" prefWidth="353.0" text="Upload results:" />
+        <Button fx:id="uploadButton" defaultButton="true" disable="true" onAction="#uploadFileAction" text="Select..." />
         <Text fx:id="theoremInfo" wrappingWidth="215.0" />
+        <ProgressBar fx:id="loadingIndicator" prefHeight="20.0" prefWidth="311.0" progress="0.0" visible="false" />
     
         </children>
          

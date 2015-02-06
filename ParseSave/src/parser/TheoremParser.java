@@ -11,8 +11,9 @@ import model.Theorem;
 import dbconnection.SqlLiteDb;
 
 public class TheoremParser {
-    static String NBU_HEADER   = "*";
-    static String FCUBE_HEADER = "%";
+    static String NBU_HEADER          = "*";
+    static String FCUBE_HEADER        = "%";
+    static String FCUBE_PROVER_HEADER = "% Prover";
 
     /**
      * Riceve il file da processare. Controlla le prime righe di intestazione
@@ -27,7 +28,7 @@ public class TheoremParser {
 
     public static void processFile(File file, Integer machine_id)
             throws IOException {
-        System.out.println("PROCESS FILE");
+
         BufferedReader br = new BufferedReader(new InputStreamReader(
                 new FileInputStream(file)));
         String firstLine = br.readLine();
@@ -55,27 +56,45 @@ public class TheoremParser {
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
         String strLine;
+        String prover = "";
 
         while ((strLine = br.readLine()) != null) {
+            if (strLine.startsWith(FCUBE_PROVER_HEADER)) {
+                prover = getProverFromHeader(strLine, FCUBE_HEADER);
+            }
             if (strLine.trim().startsWith(FCUBE_HEADER)
                     || strLine.trim().isEmpty()) {
                 continue;
             }
             String[] lineInfo = strLine.split(";");
+
             Theorem parsedTheorem = Theorem.getTheoremFromFcubeString(lineInfo);
+
             try {
-                SqlLiteDb.insertTheoremRow(parsedTheorem.name,
-                        parsedTheorem.prover, parsedTheorem.provable,
-                        parsedTheorem.success, parsedTheorem.execution_time,
-                        "SYJ", machine_id);
-            } catch (Exception e) {
+                SqlLiteDb.insertTheoremRow(parsedTheorem.name, prover,
+                        parsedTheorem.provable, parsedTheorem.success,
+                        parsedTheorem.execution_time, "SYJ", machine_id);
+            } catch (SQLException e) {
                 System.err.println("ERRORE insertTheoremRow"
                         + e.getClass().getName() + ": " + e.getMessage());
+                break;
             }
 
         }
 
         br.close();
+    }
+
+    private static String getProverFromHeader(String strLine, String header) {
+        String prover = "";
+        if (header.startsWith(FCUBE_HEADER)) {
+            prover = strLine.split(":")[1].trim();
+        }
+        if (header.startsWith(NBU_HEADER)) {
+            prover = strLine.split(":")[1].trim();
+        }
+
+        return prover.toUpperCase();
     }
 
     /**
@@ -93,7 +112,6 @@ public class TheoremParser {
 
             String strLine;
 
-            // Read File Line By Line
             while ((strLine = br.readLine()) != null) {
                 if (strLine.startsWith(NBU_HEADER)) {
                     System.out.println("linea di intestazione, salto");

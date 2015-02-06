@@ -11,16 +11,18 @@ import javafx.beans.property.StringProperty;
  * @author eleonora
  */
 public class MachineTable {
-    private StringProperty        name;
     private SimpleIntegerProperty id;
+    private StringProperty        name;
+    private StringProperty        description;
 
-    public MachineTable(Integer id, String name) {
-        this.setId(new SimpleIntegerProperty(id));
-        this.setName(new SimpleStringProperty(name));
+    public MachineTable(Integer id, String name, String description) {
+        this.id = new SimpleIntegerProperty(id);
+        this.name = new SimpleStringProperty(name);
+        this.description = new SimpleStringProperty(description);
     }
 
-    public void setName(StringProperty name) {
-        this.name = name;
+    public void setName(String name) {
+        this.name.set(name);
     }
 
     public String getName() {
@@ -33,6 +35,14 @@ public class MachineTable {
 
     public void setId(SimpleIntegerProperty id) {
         this.id = id;
+    }
+
+    public void setDescription(String description) {
+        this.description.set(description);
+    }
+
+    public String getDescription() {
+        return description.get();
     }
 
 }

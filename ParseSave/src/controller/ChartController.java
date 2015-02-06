@@ -11,7 +11,6 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
@@ -22,7 +21,7 @@ import dbconnection.SqlLiteDb;
 /**
  * @author eleonora
  */
-public class ChartController implements Initializable {
+public class ChartController extends BaseController {
     @FXML
     private BarChart<String, Integer>                       executionChart;
     @FXML
