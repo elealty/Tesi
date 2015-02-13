@@ -89,7 +89,7 @@ public class MainController extends BaseController {
             throws IOException {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                "/view/CompareCharts.fxml"));
+                "/view/CompareTheorems.fxml"));
         Pane cmdPane = (Pane) fxmlLoader.load();
 
         try {

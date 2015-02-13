@@ -24,7 +24,7 @@
         <Menu mnemonicParsing="false" text="Theorem">
           <items>
             <MenuItem id="listTheorem" mnemonicParsing="false" onAction="#handleTheoremListAction" text="List" />
-            <MenuItem id="compareTheorem" mnemonicParsing="false" onAction="#handleCompareTheoremAction" text="Charts" />
+            <MenuItem id="compareTheorem" mnemonicParsing="false" onAction="#handleCompareTheoremAction" text="Compare" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#handleTheoremAction" text="Upload" />
           </items>

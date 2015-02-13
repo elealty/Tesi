@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
+import java.util.Iterator;
+
+import javafx.collections.ObservableList;
 
 /**
  * @author eleonora
@@ -123,7 +126,7 @@ public class SqlLiteDb {
         try {
             stmt = conn.createStatement();
             String sql = "SELECT  name, prover, execution_time as execution "
-                    + " FROM theorem WHERE provable = 1 AND execution_time < 5000";
+                    + " FROM theorem WHERE provable = 1";
             ResultSet res = stmt.executeQuery(sql);
             return res;
 
@@ -150,6 +153,56 @@ public class SqlLiteDb {
         } catch (Exception e) {
             System.err.println("ERRORE getTheoremsProverMaxTimes : "
                     + e.getMessage());
+        }
+        return null;
+    }
+
+    public static ResultSet getTheoremsFromSearch(Integer machine,
+            ObservableList<String> provers) throws SQLException {
+        if (conn.isClosed() == true) {
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT t.id,  t.name as name, prover, provable, "
+                    + "execution_time as execution, "
+                    + "success, family, m.name as machine "
+                    + " FROM theorem t  LEFT JOIN machine m "
+                    + " ON m.id = t.machine_id" + " WHERE m.id = " + machine
+                    + " AND prover IN (";
+            Iterator<String> iter = provers.iterator();
+            while (iter.hasNext()) {
+                sql += "'" + iter.next().toUpperCase() + "'";
+                if (!iter.hasNext())
+                    break;
+                sql += ",";
+            }
+            sql += ") ORDER BY prover";
+            System.out.println(sql);
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err.println("ERRORE getTheoremsFromSearch : "
+                    + e.getMessage());
+        }
+        return null;
+    }
+
+    public static ResultSet getAllProvers() throws SQLException {
+        if (conn.isClosed() == true) {
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT distinct(prover) from theorem";
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err.println("ERRORE getAllProvers : " + e.getMessage());
         }
         return null;
     }

@@ -123,7 +123,6 @@ public class TheoremController extends BaseController {
             }
         });
 
-        // Define rendering of selected value shown in ComboBox.
         machineCombo.setConverter(new StringConverter<Machine>() {
             @Override
             public String toString(Machine machine) {
@@ -136,7 +135,7 @@ public class TheoremController extends BaseController {
 
             @Override
             public Machine fromString(String personString) {
-                return null; // No conversion fromString needed.
+                return null;
             }
         });
 
