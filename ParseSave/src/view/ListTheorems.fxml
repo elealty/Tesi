@@ -15,9 +15,9 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
    <children>
-        <Label prefHeight="25.0" prefWidth="226.0" style="-fx-font: NORMAL 20 Tahoma;" text="Theorems" wrapText="true" GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <Label prefHeight="25.0" prefWidth="226.0" style="-fx-font: NORMAL 20 Tahoma;" text="Theorems" wrapText="true" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
         </Label>
-      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="645.0" prefWidth="986.0" GridPane.rowIndex="1">
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="645.0" prefWidth="986.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
          <children>
             <HBox prefHeight="8.0" prefWidth="969.0">
                <children>
