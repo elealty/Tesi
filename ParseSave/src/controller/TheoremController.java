@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -61,13 +62,19 @@ public class TheoremController extends BaseController {
             @Override
             public Void call() {
                 Integer machine_id = machineCombo.getValue().id;
-                long filesCount = (long) files.size();
+                long filesCount = files.size();
                 for (File file : files) {
-                    theoremInfo.setText("Loading file :" + file.getName());
-                    // + " (" + (files.indexOf(file) + 1) + "/"
-                    // + filesCount + ")");
                     try {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                theoremInfo.setText("Loading file "
+                                        + file.getName());
+                            }
+                        });
+
                         TheoremParser.processFile(file, machine_id);
+
                     } catch (IOException e) {
                         this.cancel();
                         loadingIndicator.setVisible(false);
@@ -76,6 +83,11 @@ public class TheoremController extends BaseController {
                         this.cancel();
                         loadingIndicator.setVisible(false);
                         showErrorMessage(e.toString());
+                    } catch (Exception e) {
+                        this.cancel();
+                        loadingIndicator.setVisible(false);
+                        showErrorMessage(e.toString());
+
                     }
                     updateProgress((long) files.indexOf(file) + 1, filesCount);
                 }
@@ -86,12 +98,14 @@ public class TheoremController extends BaseController {
             protected void succeeded() {
                 super.succeeded();
                 updateMessage("Done!");
+                theoremInfo.setText("");
                 showInfoMessage("Upload complete", "All files loaded.");
             }
 
             @Override
             protected void failed() {
                 super.failed();
+                loadingIndicator.setVisible(false);
                 updateMessage("Failed!");
                 showErrorMessage("Task to load files failed.");
             }

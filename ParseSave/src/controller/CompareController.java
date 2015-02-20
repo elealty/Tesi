@@ -19,7 +19,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -115,11 +114,12 @@ public class CompareController extends BaseController {
     @FXML
     private TableColumn<SummaryTable, String>  itemTestsetSum;
     @FXML
+    private TableColumn<SummaryTable, String>  itemMachineSum;
+    @FXML
     private TableColumn<SummaryTable, Integer> itemTotalSum;
     @FXML
     private TableColumn<SummaryTable, Integer> itemProvableSum;
     @FXML
-    private TableColumn<SummaryTable, String>  itemMachineSum;
     Service<Void>                              service;
 
     ProgressDialog                             progDiag;
@@ -152,6 +152,7 @@ public class CompareController extends BaseController {
 
         chkAllProvers.selectedProperty().addListener(
                 new ChangeListener<Boolean>() {
+                    @Override
                     public void changed(ObservableValue<? extends Boolean> ov,
                             Boolean old_val, Boolean new_val) {
                         provers.forEach((prover) -> prover.setSelected(new_val));
@@ -348,7 +349,9 @@ public class CompareController extends BaseController {
         itemMachineSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
                         "machineName"));
-
+        itemProverSum
+                .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
+                        "prover"));
         itemProvableSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
                         "totalProvable"));
@@ -575,9 +578,4 @@ public class CompareController extends BaseController {
         }
     }
 
-    @FXML
-    protected void handleSelectChartTab(ActionEvent event) {
-        System.out.println("HANDLE SELECT CHART");
-        // setChartData();
-    }
 }

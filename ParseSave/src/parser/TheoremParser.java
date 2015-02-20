@@ -50,7 +50,7 @@ public class TheoremParser {
      * @param file
      * @throws IOException
      */
-    private static void parseProverFile(File file, Integer machine_id)
+    private static void parseProverFile(File file, int machine_id)
             throws IOException, SQLException {
         System.out.println("parseProverfile");
         FileInputStream fstream = new FileInputStream(file);
@@ -81,7 +81,7 @@ public class TheoremParser {
             SqlLiteDb.insertTheoremRow(parsedTheorem.name, prover,
                     parsedTheorem.family, testset, parsedTheorem.provable,
                     parsedTheorem.success, parsedTheorem.execution_time,
-                    machine_id);
+                    parsedTheorem.timeout, machine_id);
         }
 
         br.close();
@@ -118,10 +118,12 @@ public class TheoremParser {
             String[] lineInfo = strLine.split(";");
             Theorem parsedTheorem = Theorem.getTheoremFromNbuString(
                     lineInfo[0], lineInfo[1]);
+
             SqlLiteDb.insertTheoremRow(parsedTheorem.name,
                     parsedTheorem.prover, parsedTheorem.family, "SYJ",
                     parsedTheorem.provable, parsedTheorem.success,
-                    parsedTheorem.execution_time, machine_id);
+                    parsedTheorem.execution_time, parsedTheorem.timeout,
+                    machine_id);
         }
         br.close();
     };

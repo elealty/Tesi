@@ -19,9 +19,11 @@ public class Theorem {
     public int    execution_time;
     public String family;
     public String testset;
+    public int    timeout;
 
     public Theorem(String name, String prover, String family, String testset,
-            boolean provable, boolean success, int execution_time, int id) {
+            boolean provable, boolean success, int execution_time, int timeout,
+            int id) {
         this.name = name;
         this.prover = prover;
         this.family = family;
@@ -29,6 +31,7 @@ public class Theorem {
         this.provable = (provable == true ? 1 : 0);
         this.success = (success == true ? 1 : 0);
         this.execution_time = execution_time;
+        this.timeout = timeout;
         this.setId(id);
     }
 
@@ -43,20 +46,21 @@ public class Theorem {
      */
     public static Theorem getTheoremFromNbuString(String strTheorem,
             String execution) {
-
+        System.out.println("getTheoremFromNbuString");
         String[] tValues = strTheorem.replace("test:", "").split(",");
         String[] exValues = execution.replace("times (ms):", "")
                 .replace(" ", "").split(",");
         String name = tValues[0].replace(" ", "");
-        String family = name.split("+")[0];
+        String family = name.substring(0, getSeparatOfName(name)).toUpperCase();
         String prover = "NBU";
         String testset = "SYJ";
         boolean isProvable = (tValues[1].trim().equals("PROVABLE"));
         boolean isSuccess = (tValues[2].trim().equals("SUCCESS"));
         int timeExecution = Integer.parseInt(exValues[0]);
+        int timeout = 0;
 
         return new Theorem(name, prover, family, testset, isProvable,
-                isSuccess, timeExecution, -1);
+                isSuccess, timeExecution, timeout, -1);
 
     }
 
@@ -76,14 +80,17 @@ public class Theorem {
         boolean isProvable = (strTheorem[1].trim().equals("provable"));
         boolean isSuccess = true;
         String time = strTheorem[2].trim();
-
+        Integer timeout = 0;
         int timeExecution = 0;
+
         if (!time.startsWith("timeout")) {
             timeExecution = Integer.parseInt(time);
+        } else {
+            timeout = Integer.parseInt(time.replaceAll("[^0-9]", ""));
         }
 
         return new Theorem(name, prover, family, testset, isProvable,
-                isSuccess, timeExecution, -1);
+                isSuccess, timeExecution, timeout, -1);
 
     }
 

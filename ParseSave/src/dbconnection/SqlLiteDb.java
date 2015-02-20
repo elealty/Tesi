@@ -77,15 +77,16 @@ public class SqlLiteDb {
 
             stmt = conn.createStatement();
 
-            String sql = "CREATE VIEW \"provable_by_prover\" AS "
-                    + "SELECT count(*), testset, prover, machine_id"
-                    + "FROM theorem t  " + "WHERE provable =1 "
-                    + "GROUP BY prover " + "ORDER BY prover";
+            String sql = "CREATE VIEW \"provable_by_prover\" AS"
+                    + " SELECT count(*) as total_provable, family, testset,"
+                    + " prover, machine_id" + " FROM theorem t"
+                    + " WHERE provable = 1" + " GROUP BY prover"
+                    + " ORDER BY prover";
             stmt.executeQuery(sql);
 
             sql = "CREATE VIEW \"total_by_prover\" AS "
-                    + " SELECT count(*) as total, testset, prover, machine_id"
-                    + " FROM theorem t  " + " group by prover"
+                    + " SELECT count(*) as total, testset, family, prover, machine_id"
+                    + " FROM theorem t" + " GROUP BY prover"
                     + " ORDER BY prover";
             stmt.executeQuery(sql);
 
@@ -100,17 +101,19 @@ public class SqlLiteDb {
 
     public static void insertTheoremRow(String name, String prover,
             String family, String testset, int provable, int success,
-            int executionTime, Integer machine_id) throws SQLException {
+            int executionTime, int timeout, int machine_id) throws SQLException {
+        System.out.println("insertTheoremRow");
         if (conn.isClosed() == true) {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
         stmt = conn.createStatement();
 
         String sql = "INSERT OR REPLACE into THEOREM"
-                + " (name, prover, family, testset, provable, success, execution_time, machine_id) "
-                + "VALUES(" + "'" + name + "','" + prover + "','" + family
-                + "','" + testset + "'," + provable + "," + success + ","
-                + executionTime + "," + machine_id + ")";
+                + " (name, prover, family, testset, provable, success, "
+                + "execution_time, timeout, machine_id) " + "VALUES(" + "'"
+                + name + "','" + prover + "','" + family + "','" + testset
+                + "'," + provable + "," + success + "," + executionTime + ","
+                + timeout + "," + machine_id + ")";
 
         stmt.execute(sql);
     }
