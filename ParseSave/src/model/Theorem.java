@@ -65,12 +65,14 @@ public class Theorem {
     }
 
     /**
-     * Return Theorem class parsing Fcube file row.
+     * Return Theorem class parsing file row.
      * 
      * @param strTheorem
      *            represent file row
-     * @param execution
-     *            represent the execution time of the theorem
+     * @param prover
+     *            prover of problem row
+     * @param testset
+     *            testset of problem row
      * @return theorem from Fcube file
      */
     public static Theorem getTheoremFromString(String[] strTheorem,

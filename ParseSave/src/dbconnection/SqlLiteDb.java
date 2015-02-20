@@ -264,8 +264,13 @@ public class SqlLiteDb {
         return null;
     }
 
-    /******************************* MACHINES **********************************************/
-
+    /**
+     * Return all machine stored in db.
+     * 
+     * @return Resultset
+     * @exception SQLException
+     *                if database il locked or sql sintax wrong
+     */
     public static ResultSet getAllMachines() throws SQLException {
         if (conn.isClosed() == true) {
             System.out.println("Connection closed, be reopen");
@@ -285,15 +290,20 @@ public class SqlLiteDb {
     }
 
     /**
-     * Insert machine description
+     * Insert new machine
      * 
      * @param name
-     * @throws SQLException
+     *            machine name
+     * @param description
+     *            machine description
+     * @exception SQLException
+     *                if database il locked or sql sintax wrong
+     * @exception SQLIntegrityConstraintViolationException
+     *                if there are another machine with same name
      */
     public static void insertMachineRow(String name, String description)
             throws SQLException, SQLIntegrityConstraintViolationException {
         if (conn.isClosed() == true) {
-            System.out.println("Connection closed, be reopen");
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
         stmt = conn.createStatement();
@@ -304,10 +314,13 @@ public class SqlLiteDb {
     }
 
     /**
-     * Delete machine description
+     * Delete machine from database with ID
      * 
-     * @param name
-     * @throws SQLException
+     * @param id
+     *            machine id
+     * @exception SQLException
+     *                if database il locked or sql sintax wrong if database il
+     *                locked or sql sintax wrong
      */
     public static void deleteMachineRow(Integer id) throws SQLException {
         if (conn.isClosed() == true) {
@@ -322,8 +335,12 @@ public class SqlLiteDb {
     /**
      * Update machine name
      * 
-     * @param name
-     * @throws SQLException
+     * @param id
+     *            machine id
+     * @param new_name
+     *            machine name
+     * @exception SQLException
+     *                if database il locked or sql sintax wrong
      */
     public static void updateMachineName(Integer id, String new_name)
             throws SQLException {

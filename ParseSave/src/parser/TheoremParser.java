@@ -22,10 +22,13 @@ public class TheoremParser {
      * corrispondente funzione di parsing
      * 
      * @param file
-     *            File da processare
-     * @throws IOException
-     *             se non riesce a leggere il file
-     * @throws SQLException
+     *            File to process
+     * @param machine_id
+     *            indicate where problems in file are executed
+     * @exception IOException
+     *                se non riesce a leggere il file
+     * @exception SQLException
+     *                if database il locked or sql sintax wrong
      */
 
     public static void processFile(File file, Integer machine_id)
@@ -48,7 +51,7 @@ public class TheoremParser {
      * database
      * 
      * @param file
-     * @throws IOException
+     * @exception IOException
      */
     private static void parseProverFile(File file, int machine_id)
             throws IOException, SQLException {
@@ -99,8 +102,10 @@ public class TheoremParser {
      * TheoremParser tracciato Nbu Legge riga per riga e scrive nel database
      * 
      * @param file
-     * @throws SQLException
-     * @throws IOException
+     * @exception SQLException
+     *                if database il locked or sql sintax wrong
+     * @exception IOException
+     *                if there are problem during parse file
      */
     private static void parseNbuProverFile(File file, Integer machine_id)
             throws SQLException, IOException {
