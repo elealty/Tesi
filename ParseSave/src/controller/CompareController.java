@@ -44,7 +44,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
@@ -132,7 +134,11 @@ public class CompareController extends BaseController {
     @FXML
     TabPane                                    tabCompare;
     @FXML
-    Tab                                        randSummary;
+    VBox                                       randSummary;
+    @FXML
+    VBox                                       SYJSummary;
+    @FXML
+    StackPane                                  stackedSummary;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -147,7 +153,8 @@ public class CompareController extends BaseController {
 
         populateMachineChoice();
         populateTestsetChoice();
-        configureCharts();
+        configureExecutionCharts();
+        configureRandXXCharts();
 
         iniWidth = new SimpleDoubleProperty();
         iniWidth.set(100.0d);
@@ -174,6 +181,11 @@ public class CompareController extends BaseController {
                         }
                     }
                 });
+    }
+
+    private void configureRandXXCharts() {
+        // TODO Auto-generated method stub
+
     }
 
     private void populateMachineChoice() {
@@ -206,7 +218,7 @@ public class CompareController extends BaseController {
         cmbTestset.setItems(testsetsData);
     }
 
-    private void configureCharts() {
+    private void configureExecutionCharts() {
         executionChart.addEventFilter(ScrollEvent.ANY, new ZoomHandler());
     }
 
@@ -224,6 +236,23 @@ public class CompareController extends BaseController {
                     buttonSearch.setDisable(false);
                 } else {
                     buttonSearch.setDisable(true);
+                }
+
+                SYJSummary.setVisible(false);
+                randSummary.setVisible(false);
+                stackedSummary.getChildren().get(0).setVisible(true);
+                stackedSummary.getChildren().get(1).setVisible(true);
+                switch (newValue) {
+                case "SYJ":
+                    stackedSummary.getChildren().get(0).setVisible(true);
+                    break;
+                case "RANDOMXX":
+                    stackedSummary.getChildren().get(1).setVisible(true);
+                    break;
+                default:
+                    stackedSummary.getChildren().get(0).setVisible(false);
+                    stackedSummary.getChildren().get(1).setVisible(false);
+                    break;
                 }
             }
         });
@@ -311,6 +340,45 @@ public class CompareController extends BaseController {
         itemProverCompareCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
                         "prover"));
+        itemProverCompareCol.setCellFactory(column -> {
+            return new TableCell<TheoremTable, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        setAlignment(Pos.CENTER);
+                        setText(item.toString());
+                        switch (item) {
+                        case "NBU":
+                            setTextFill(Color.DARKCYAN);
+                            break;
+                        case "FCUBE":
+                            setTextFill(Color.AQUAMARINE);
+                            break;
+                        case "JNBU_DE_GCCOVER":
+                            setTextFill(Color.CADETBLUE);
+                            break;
+                        case "JNBU_GO":
+                            setTextFill(Color.VIOLET);
+                            break;
+                        case "JNBU_GO_MIN":
+                            setTextFill(Color.TOMATO);
+                            break;
+                        case "PNBU_DEC":
+                            setTextFill(Color.YELLOW);
+                            break;
+                        case "PNBU_DEM":
+                            setTextFill(Color.BROWN);
+                            break;
+                        default:
+                            setTextFill(Color.YELLOWGREEN);
+                        }
+                    }
+                }
+            };
+        });
         itemProvableCompareCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, Boolean>(
                         "provable"));
@@ -348,6 +416,45 @@ public class CompareController extends BaseController {
         itemProverSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
                         "prover"));
+        itemProverSum.setCellFactory(column -> {
+            return new TableCell<SummaryTable, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        setAlignment(Pos.CENTER);
+                        setText(item.toString());
+                        switch (item) {
+                        case "NBU":
+                            setTextFill(Color.DARKCYAN);
+                            break;
+                        case "FCUBE":
+                            setTextFill(Color.AQUAMARINE);
+                            break;
+                        case "JNBU_DE_GCCOVER":
+                            setTextFill(Color.CADETBLUE);
+                            break;
+                        case "JNBU_GO":
+                            setTextFill(Color.VIOLET);
+                            break;
+                        case "JNBU_GO_MIN":
+                            setTextFill(Color.TOMATO);
+                            break;
+                        case "PNBU_DEC":
+                            setTextFill(Color.DARKGRAY);
+                            break;
+                        case "PNBU_DEM":
+                            setTextFill(Color.BROWN);
+                            break;
+                        default:
+                            setTextFill(Color.YELLOWGREEN);
+                        }
+                    }
+                }
+            };
+        });
         itemProvableSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
                         "totalProvable"));
@@ -396,7 +503,7 @@ public class CompareController extends BaseController {
             protected void succeeded() {
                 super.succeeded();
                 searchingIndicator.setVisible(false);
-                // showInfoMessage("Search", "Search complete.");
+                showInfoMessage("Search", "Search complete.");
             }
 
             @Override
@@ -465,13 +572,14 @@ public class CompareController extends BaseController {
 
             if (!mr.next()) {
                 showInfoMessage("Search", "No theorems found.");
+                return;
             }
-
             while (mr.next()) {
-                if (mr.isFirst()) {
+                if (curr_prover.compareTo("") == 0) {
                     curr_prover = mr.getString("prover");
                     prover_serie.setName(curr_prover);
                 }
+
                 if (curr_prover.compareTo(mr.getString("prover")) != 0) {
                     curr_prover = mr.getString("prover");
                     executionChart.getData().add(prover_serie);

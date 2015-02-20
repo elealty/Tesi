@@ -81,14 +81,14 @@ public class SqlLiteDb {
                     + " SELECT count(*) as total_provable, family, testset, "
                     + " sum(execution_time) as execution_sum,"
                     + " prover, machine_id FROM theorem t"
-                    + " WHERE provable = 1 GROUP BY prover"
-                    + " ORDER BY prover";
+                    + " WHERE provable = 1 GROUP BY prover family"
+                    + " ORDER BY prover, family";
             stmt.executeQuery(sql);
 
             sql = "CREATE VIEW \"total_by_prover\" AS "
                     + " SELECT count(*) as total, testset, family, prover, machine_id"
-                    + " FROM theorem t" + " GROUP BY prover"
-                    + " ORDER BY prover";
+                    + " FROM theorem t" + " GROUP BY prover, family"
+                    + " ORDER BY prover, family";
             stmt.executeQuery(sql);
 
             stmt.close();
@@ -235,8 +235,9 @@ public class SqlLiteDb {
 
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT distinct(prover) FROM theorem WHERE testset ='"
-                    + testset.toUpperCase() + "'";
+            String sql = "SELECT distinct(prover) FROM theorem"
+                    + " WHERE testset ='" + testset.toUpperCase() + "'"
+                    + " ORDER BY prover";
             ResultSet res = stmt.executeQuery(sql);
             return res;
 
@@ -421,8 +422,9 @@ public class SqlLiteDb {
                     + "t.family, p.execution_sum " + " FROM total_by_prover t "
                     + " LEFT JOIN provable_by_prover p"
                     + " ON (p.testset = t.testset "
-                    + " AND p.prover = t.prover )"
-                    + " WHERE p.testset ='SYJ' AND upper(p.prover) IN (";
+                    + " AND p.prover = t.prover " + " AND p.family = t.family "
+                    + ")" + " WHERE p.testset ='" + testset
+                    + "' AND upper(p.prover) IN (";
             ListIterator<String> iter = selectedProvers.listIterator();
             while (iter.hasNext()) {
                 sql += "'" + iter.next().toUpperCase() + "'";
@@ -430,7 +432,8 @@ public class SqlLiteDb {
                     break;
                 sql += ",";
             }
-            sql += ") ";
+            sql += ")" + " GROUP BY t.prover, t.family"
+                    + " ORDER BY t.prover, t.family";
             System.out.println(sql);
             ResultSet res = stmt.executeQuery(sql);
             return res;

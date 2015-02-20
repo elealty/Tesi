@@ -171,10 +171,30 @@ public class TheoremListController extends BaseController {
                     } else {
                         setAlignment(Pos.CENTER);
                         setText(item.toString());
-                        if (item.compareTo("NBU") == 0) {
+                        switch (item) {
+                        case "NBU":
                             setTextFill(Color.DARKCYAN);
-                        } else {
-                            setTextFill(Color.CORAL);
+                            break;
+                        case "FCUBE":
+                            setTextFill(Color.AQUAMARINE);
+                            break;
+                        case "JNBU_DE_GCCOVER":
+                            setTextFill(Color.CADETBLUE);
+                            break;
+                        case "JNBU_GO":
+                            setTextFill(Color.VIOLET);
+                            break;
+                        case "JNBU_GO_MIN":
+                            setTextFill(Color.LAVENDER);
+                            break;
+                        case "PNBU_DEC":
+                            setTextFill(Color.BISQUE);
+                            break;
+                        case "PNBU_DEM":
+                            setTextFill(Color.CORNSILK);
+                            break;
+                        default:
+                            setTextFill(Color.YELLOWGREEN);
                         }
                     }
                 }
