@@ -345,9 +345,6 @@ public class CompareController extends BaseController {
         itemFamilySum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
                         "family"));
-        itemMachineSum
-                .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
-                        "machineName"));
         itemProverSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
                         "prover"));
