@@ -112,13 +112,13 @@ public class CompareController extends BaseController {
     @FXML
     private TableColumn<SummaryTable, String>  itemFamilySum;
     @FXML
-    private TableColumn<SummaryTable, String>  itemTestsetSum;
-    @FXML
     private TableColumn<SummaryTable, String>  itemMachineSum;
     @FXML
     private TableColumn<SummaryTable, Integer> itemTotalSum;
     @FXML
     private TableColumn<SummaryTable, Integer> itemProvableSum;
+    @FXML
+    private TableColumn<SummaryTable, Integer> itemExecutionSum;
     @FXML
     Service<Void>                              service;
 
@@ -131,9 +131,11 @@ public class CompareController extends BaseController {
     Tab                                        tabChart;
     @FXML
     TabPane                                    tabCompare;
+    @FXML
+    Tab                                        randSummary;
 
     @Override
-    public void initialize(URL fxmlFileLocation, ResourceBundle arg1) {
+    public void initialize(URL location, ResourceBundle resources) {
         configuteTableView();
 
         configureMachineChoices();
@@ -340,9 +342,6 @@ public class CompareController extends BaseController {
     }
 
     private void configureSummaryTableView() {
-        itemTestsetSum
-                .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
-                        "testset"));
         itemFamilySum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
                         "family"));
@@ -358,6 +357,9 @@ public class CompareController extends BaseController {
         itemTotalSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
                         "total"));
+        itemExecutionSum
+                .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
+                        "totalExecution"));
     }
 
     private void loadAllProvers(String testset) {
@@ -567,6 +569,7 @@ public class CompareController extends BaseController {
                 SummaryTable s = new SummaryTable(mr.getString("prover"),
                         mr.getString("family"), mr.getString("testset"),
                         mr.getInt("total_provable"), mr.getInt("total"),
+                        mr.getInt("execution_sum"),
                         mr.getString("machine_name"));
                 sumData.add(s);
 

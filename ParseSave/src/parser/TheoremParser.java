@@ -77,11 +77,11 @@ public class TheoremParser {
 
             Theorem parsedTheorem = Theorem.getTheoremFromString(lineInfo,
                     prover, testset);
-
             SqlLiteDb.insertTheoremRow(parsedTheorem.name, prover,
                     parsedTheorem.family, testset, parsedTheorem.provable,
                     parsedTheorem.success, parsedTheorem.execution_time,
                     parsedTheorem.timeout, machine_id);
+
         }
 
         br.close();

@@ -14,15 +14,26 @@ public class SummaryTable {
     private String machineName;
     private int    totalProvable;
     private int    total;
+    private int    totalExecution;
 
     public SummaryTable(String prover, String family, String testset,
-            int totalProvable, int total, String machineName) {
+            int totalProvable, int total, int totalExecution, String machineName) {
         this.setProver(prover);
         this.setFamily(family);
         this.setTestset(testset);
         this.setMachineName(machineName);
         this.setTotalProvable(totalProvable);
         this.setTotal(total);
+        this.setTotalExecution(totalExecution);
+
+    }
+
+    public void setTotalExecution(int totalExecution) {
+        this.totalExecution = totalExecution;
+    }
+
+    public int getTotalExecution() {
+        return totalExecution;
 
     }
 
