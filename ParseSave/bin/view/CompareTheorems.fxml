@@ -25,12 +25,18 @@
                   <Label prefHeight="28.0" prefWidth="279.0" text="Filter theorems" />
                   <VBox prefHeight="100.0" prefWidth="260.0">
                      <children>
-                        <Label text="Machine" />
+                        <Label text="Machine">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font></Label>
                         <ComboBox fx:id="cmbMachine" prefHeight="25.0" prefWidth="246.0" />
                         <Label text="Testset">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
                         </Label>
                         <ComboBox fx:id="cmbTestset" prefHeight="25.0" prefWidth="246.0" />
                      </children>
@@ -40,7 +46,10 @@
                   </VBox>
                   <VBox prefHeight="300.0" prefWidth="282.0">
                      <children>
-                        <Label text="Provers" />
+                        <Label text="Provers">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font></Label>
                         <ListView fx:id="listProvers" prefHeight="283.0" prefWidth="271.0">
                            <padding>
                               <Insets right="5.0" />
@@ -57,11 +66,11 @@
                         <Insets left="10.0" top="10.0" />
                      </VBox.margin>
                   </Button>
-                  <ProgressBar fx:id="searchingIndicator" prefHeight="20.0" prefWidth="311.0" progress="0.0" />
+                  <ProgressBar fx:id="searchingIndicator" prefHeight="20.0" prefWidth="311.0" progress="0.0" visible="false" />
                   
                </children>
             </VBox>
-            <TabPane fx:id="tabCompare" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="537.0" prefWidth="700.0" HBox.hgrow="ALWAYS">
+            <TabPane fx:id="tabCompare" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="546.0" prefWidth="800.0" HBox.hgrow="ALWAYS">
                <tabs>
                   <Tab text="Theorems">
                      <content> 
@@ -96,20 +105,44 @@
                            </children>
                         </VBox>
                      </content></Tab>
-                  <Tab text="Summary">
+                  <Tab text="SYJ Summary">
+                     <content>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                           <children>
+                              <TableView id="tableViewSummary" fx:id="tableViewSummary" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="500.0" VBox.vgrow="ALWAYS">
+                                 <columns>
+                                    <TableColumn fx:id="itemProverSum" prefWidth="120.0" text="Prover" />
+                                    <TableColumn fx:id="itemFamilySum" prefWidth="110.0" text="Family" />
+                                    <TableColumn maxWidth="142.0" minWidth="50.0" prefWidth="142.0" text="Executed">
+                                       <columns>
+                                          <TableColumn fx:id="itemTotalSum" text="Total" />
+                                          <TableColumn fx:id="itemProvableSum" maxWidth="142.0" minWidth="50.0" prefWidth="100.0" text="Provable" />
+                                          <TableColumn fx:id="itemExecutionSum" text="Time (s)" />
+                                       </columns>
+                                    </TableColumn>
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="randSummary" text="randomXX Summary">
                      <content>
                         <VBox>
                            <children>
-                              <TableView id="tableViewSummary" fx:id="tableViewSummary" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0">
-                                 <columns>
-                                    <TableColumn fx:id="itemTestsetSum" prefWidth="127.0" text="Testset" />
-                                    <TableColumn fx:id="itemProverSum" prefWidth="127.0" text="Prover" />
-                                    <TableColumn fx:id="itemFamilySum" prefWidth="127.0" text="Name" />
-                                    <TableColumn fx:id="itemMachineSum" maxWidth="142.0" minWidth="50.0" prefWidth="142.0" text="Total provable" />
-                                    <TableColumn fx:id="itemProvableSum" maxWidth="142.0" minWidth="50.0" prefWidth="142.0" text="Total provable" />
-                                    <TableColumn fx:id="itemTotalSum" prefWidth="73.0" text="Totals" />
-                                 </columns>
-                              </TableView>
+                              <ScrollPane prefViewportHeight="513.0" prefViewportWidth="690.0">
+                                 <content>
+                                    <LineChart prefHeight="492.0" prefWidth="652.0">
+                                      <xAxis>
+                                        <CategoryAxis label="Size" side="BOTTOM" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis label="Time (s)" side="LEFT" />
+                                      </yAxis>
+                                    </LineChart>
+                                 </content>
+                              </ScrollPane>
+                              <Label text="Use Ctrl + mouse to zoom" />
                            </children>
                         </VBox>
                      </content>
