@@ -26,4 +26,5 @@ abstract class BaseController implements Initializable {
     protected void showWarningMessage(String header, String message) {
         showMessage(AlertType.WARNING, "Warning", header, message);
     }
+
 }
