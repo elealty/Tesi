@@ -77,10 +77,11 @@ public class SqlLiteDb {
 
             stmt = conn.createStatement();
 
-            String sql = "CREATE VIEW \"provable_by_prover\" AS"
-                    + " SELECT count(*) as total_provable, family, testset,"
-                    + " prover, machine_id" + " FROM theorem t"
-                    + " WHERE provable = 1" + " GROUP BY prover"
+            String sql = "CREATE VIEW \"provable_by_prover\" AS "
+                    + " SELECT count(*) as total_provable, family, testset, "
+                    + " sum(execution_time) as execution_sum,"
+                    + " prover, machine_id FROM theorem t"
+                    + " WHERE provable = 1 GROUP BY prover"
                     + " ORDER BY prover";
             stmt.executeQuery(sql);
 
@@ -399,16 +400,46 @@ public class SqlLiteDb {
 
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT total_provable, total, t.prover, t.testset, "
-                    + "t.family, m.name as machine_name"
-                    + " FROM total_by_prover t "
+            String sql = "SELECT total_provable, total, t.prover, t.testset,"
+                    + "t.family, p.execution_sum " + " FROM total_by_prover t "
                     + " LEFT JOIN provable_by_prover p"
                     + " ON (p.testset = t.testset "
-                    + " AND p.prover = t.prover "
-                    + " AND p.machine_id=t.machine_id)"
-                    + " LEFT JOIN machine m  ON m.id = t.machine_id "
-                    + " WHERE m.id = " + machine + " AND t.testset ='"
-                    + testset + "'" + " AND t.prover IN (";
+                    + " AND p.prover = t.prover )"
+                    + " WHERE p.testset ='SYJ' AND upper(p.prover) IN (";
+            ListIterator<String> iter = selectedProvers.listIterator();
+            while (iter.hasNext()) {
+                sql += "'" + iter.next().toUpperCase() + "'";
+                if (!iter.hasNext())
+                    break;
+                sql += ",";
+            }
+            sql += ") ";
+            System.out.println(sql);
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err.println("ERRORE getTotals : " + e.getMessage());
+
+        }
+        return null;
+    }
+
+    public static ResultSet getSYJSummary(List<String> selectedProvers)
+            throws SQLException {
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT total_provable, total, pbp.prover"
+                    + "FROM provable_by_prover pbp,"
+                    + "(SELECT count(*) as total, prover FROM theorem t"
+                    + " WHERE testset = 'SYJ' GROUP BY prover" + ") as counter"
+                    + "WHERE pbp.prover = counter.prover "
+                    + "AND t.prover IN (";
             ListIterator<String> iter = selectedProvers.listIterator();
             while (iter.hasNext()) {
                 sql += "'" + iter.next().toUpperCase() + "'";
@@ -421,8 +452,9 @@ public class SqlLiteDb {
             return res;
 
         } catch (Exception e) {
-            System.err.println("ERRORE getAllMachines : " + e.getMessage());
+            System.err.println("ERRORE getSyjSummary : " + e.getMessage());
         }
         return null;
     }
+
 }

@@ -433,7 +433,7 @@ public class CompareController extends BaseController {
         try {
             ResultSet mr = SqlLiteDb.getTheoremsFromSearch(machine_id, testset,
                     selectedProvers);
-            System.out.println("result" + mr.getFetchSize());
+
             if (!mr.next()) {
                 showInfoMessage("Search", "No theorems found.");
             }
@@ -569,8 +569,7 @@ public class CompareController extends BaseController {
                 SummaryTable s = new SummaryTable(mr.getString("prover"),
                         mr.getString("family"), mr.getString("testset"),
                         mr.getInt("total_provable"), mr.getInt("total"),
-                        mr.getInt("execution_sum"),
-                        mr.getString("machine_name"));
+                        mr.getInt("execution_sum"), "");
                 sumData.add(s);
 
             }

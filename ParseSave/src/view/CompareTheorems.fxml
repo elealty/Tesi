@@ -113,7 +113,6 @@
                                  <columns>
                                     <TableColumn fx:id="itemProverSum" prefWidth="120.0" text="Prover" />
                                     <TableColumn fx:id="itemFamilySum" prefWidth="110.0" text="Family" />
-                                    <TableColumn fx:id="itemMachineSum" maxWidth="142.0" minWidth="50.0" prefWidth="142.0" text="Machine" />
                                     <TableColumn maxWidth="142.0" minWidth="50.0" prefWidth="142.0" text="Executed">
                                        <columns>
                                           <TableColumn fx:id="itemTotalSum" text="Total" />
