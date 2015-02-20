@@ -17,15 +17,19 @@ public class Theorem {
     public int    provable;
     public int    success;
     public int    execution_time;
+    public String family;
+    public String testset;
 
-    public Theorem(String name, String prover, boolean provable,
-            boolean success, int execution_time, int id) {
+    public Theorem(String name, String prover, String family, String testset,
+            boolean provable, boolean success, int execution_time, int id) {
         this.name = name;
         this.prover = prover;
+        this.family = family;
+        this.testset = testset;
         this.provable = (provable == true ? 1 : 0);
         this.success = (success == true ? 1 : 0);
         this.execution_time = execution_time;
-        this.id = id;
+        this.setId(id);
     }
 
     /**
@@ -44,13 +48,15 @@ public class Theorem {
         String[] exValues = execution.replace("times (ms):", "")
                 .replace(" ", "").split(",");
         String name = tValues[0].replace(" ", "");
+        String family = name.split("+")[0];
         String prover = "NBU";
+        String testset = "SYJ";
         boolean isProvable = (tValues[1].trim().equals("PROVABLE"));
         boolean isSuccess = (tValues[2].trim().equals("SUCCESS"));
         int timeExecution = Integer.parseInt(exValues[0]);
 
-        return new Theorem(name, prover, isProvable, isSuccess, timeExecution,
-                -1);
+        return new Theorem(name, prover, family, testset, isProvable,
+                isSuccess, timeExecution, -1);
 
     }
 
@@ -63,9 +69,10 @@ public class Theorem {
      *            represent the execution time of the theorem
      * @return theorem from Fcube file
      */
-    public static Theorem getTheoremFromFcubeString(String[] strTheorem) {
+    public static Theorem getTheoremFromString(String[] strTheorem,
+            String prover, String testset) {
         String name = strTheorem[0].replace(" ", "");
-        String prover = "FCUBE";
+        String family = name.substring(0, getSeparatOfName(name)).toUpperCase();
         boolean isProvable = (strTheorem[1].trim().equals("provable"));
         boolean isSuccess = true;
         String time = strTheorem[2].trim();
@@ -75,12 +82,30 @@ public class Theorem {
             timeExecution = Integer.parseInt(time);
         }
 
-        return new Theorem(name, prover, isProvable, isSuccess, timeExecution,
-                -1);
+        return new Theorem(name, prover, family, testset, isProvable,
+                isSuccess, timeExecution, -1);
 
+    }
+
+    private static int getSeparatOfName(String name) {
+        if (name.contains("+")) {
+            return name.indexOf("+");
+        }
+        if (name.contains("_")) {
+            return name.lastIndexOf("_");
+        }
+        return 0;
     }
 
     public StringProperty nameProperty() {
         return new SimpleStringProperty(name);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

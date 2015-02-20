@@ -63,9 +63,17 @@ public class TheoremController extends BaseController {
                 Integer machine_id = machineCombo.getValue().id;
                 long filesCount = (long) files.size();
                 for (File file : files) {
+                    theoremInfo.setText("Loading file :" + file.getName());
+                    // + " (" + (files.indexOf(file) + 1) + "/"
+                    // + filesCount + ")");
                     try {
                         TheoremParser.processFile(file, machine_id);
                     } catch (IOException e) {
+                        this.cancel();
+                        loadingIndicator.setVisible(false);
+                        showErrorMessage(e.toString());
+                    } catch (SQLException e) {
+                        this.cancel();
                         loadingIndicator.setVisible(false);
                         showErrorMessage(e.toString());
                     }

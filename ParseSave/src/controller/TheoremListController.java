@@ -225,9 +225,9 @@ public class TheoremListController extends BaseController {
             ResultSet mr = SqlLiteDb.getAllTheorems();
             while (mr.next()) {
                 TheoremTable t = new TheoremTable(mr.getString("name"),
-                        mr.getString("prover"), mr.getInt("execution"),
-                        mr.getInt("provable"), mr.getString("family"),
-                        mr.getString("machine"));
+                        mr.getString("prover"), mr.getString("testset"),
+                        mr.getInt("execution"), mr.getInt("provable"),
+                        mr.getString("family"), mr.getString("machine"));
                 tData.add(t);
             }
         } catch (SQLException e) {

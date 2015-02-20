@@ -16,17 +16,23 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
    <children>
-       <Label prefHeight="13.0" prefWidth="226.0" style="-fx-font: NORMAL 20 Tahoma;" text="Compare theorems" GridPane.columnIndex="0" GridPane.rowIndex="0">
+       <Label prefHeight="13.0" prefWidth="226.0" style="-fx-font: NORMAL 20 Tahoma;" text="Compare theorems" textFill="#378dd3" GridPane.columnIndex="0" GridPane.rowIndex="0">
     </Label>
       <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="1009.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
          <children>
             <VBox prefHeight="514.0" prefWidth="282.0">
                <children>
                   <Label prefHeight="28.0" prefWidth="279.0" text="Filter theorems" />
-                  <VBox prefHeight="56.0" prefWidth="282.0">
+                  <VBox prefHeight="100.0" prefWidth="260.0">
                      <children>
                         <Label text="Machine" />
                         <ComboBox fx:id="cmbMachine" prefHeight="25.0" prefWidth="246.0" />
+                        <Label text="Testset">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <ComboBox fx:id="cmbTestset" prefHeight="25.0" prefWidth="246.0" />
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />
@@ -34,31 +40,34 @@
                   </VBox>
                   <VBox prefHeight="300.0" prefWidth="282.0">
                      <children>
-                        <Label text="Testsets" />
-                        <ListView fx:id="listTestset" prefHeight="283.0" prefWidth="271.0">
+                        <Label text="Provers" />
+                        <ListView fx:id="listProvers" prefHeight="283.0" prefWidth="271.0">
                            <padding>
                               <Insets right="5.0" />
                            </padding></ListView>
+                        <CheckBox fx:id="chkAllProvers" mnemonicParsing="false" text="Select all" wrapText="true">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </CheckBox>
                      </children>
                   </VBox>
-                  <Label text="Use Ctrl + mouse click to multi select">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </Label>
             <Button fx:id="buttonSearch" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#handleSearchAction" text="Search" wrapText="true">
                      <VBox.margin>
                         <Insets left="10.0" top="10.0" />
                      </VBox.margin>
                   </Button>
+                  <ProgressBar fx:id="searchingIndicator" prefHeight="20.0" prefWidth="311.0" progress="0.0" />
+                  
                </children>
             </VBox>
-            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="537.0" prefWidth="700.0" HBox.hgrow="ALWAYS">
+            <TabPane fx:id="tabCompare" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="537.0" prefWidth="700.0" HBox.hgrow="ALWAYS">
                <tabs>
                   <Tab text="Theorems">
                      <content> 
                   <TableView fx:id="tableViewComparedTheorem" editable="true" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0">
                         <columns>
+                        <TableColumn fx:id="itemTestsetCompareCol" prefWidth="127.0" text="Prover" />
                         <TableColumn fx:id="itemProverCompareCol" prefWidth="127.0" text="Prover" />
                         <TableColumn fx:id="itemNameCompareCol" prefWidth="127.0" text="Name" />
                         <TableColumn fx:id="itemProvableCompareCol" maxWidth="80.0" minWidth="50.0" text="Provable" />
@@ -67,7 +76,7 @@
                   </TableView>
                      </content>
                   </Tab>
-                  <Tab text="Charts">
+                  <Tab fx:id="tabChart" text="Chart">
                      <content>
                         <VBox>
                            <children>
@@ -87,6 +96,24 @@
                            </children>
                         </VBox>
                      </content></Tab>
+                  <Tab text="Summary">
+                     <content>
+                        <VBox>
+                           <children>
+                              <TableView id="tableViewSummary" fx:id="tableViewSummary" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0">
+                                 <columns>
+                                    <TableColumn fx:id="itemTestsetSum" prefWidth="127.0" text="Testset" />
+                                    <TableColumn fx:id="itemProverSum" prefWidth="127.0" text="Prover" />
+                                    <TableColumn fx:id="itemFamilySum" prefWidth="127.0" text="Name" />
+                                    <TableColumn fx:id="itemMachineSum" maxWidth="142.0" minWidth="50.0" prefWidth="142.0" text="Total provable" />
+                                    <TableColumn fx:id="itemProvableSum" maxWidth="142.0" minWidth="50.0" prefWidth="142.0" text="Total provable" />
+                                    <TableColumn fx:id="itemTotalSum" prefWidth="73.0" text="Totals" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
                   
                </tabs>
                <HBox.margin>

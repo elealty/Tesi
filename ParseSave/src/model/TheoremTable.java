@@ -14,15 +14,17 @@ public class TheoremTable {
     private final BooleanProperty provable;
     private final StringProperty  family;
     private final StringProperty  machine;
+    private final StringProperty  testset;
 
-    public TheoremTable(String name, String prover, Integer execution,
-            Integer provable, String family, String machine) {
+    public TheoremTable(String name, String prover, String testset,
+            Integer execution, Integer provable, String family, String machine) {
         this.name = new SimpleStringProperty(name);
         this.prover = new SimpleStringProperty(prover);
         this.execution = new SimpleIntegerProperty(execution);
         this.provable = new SimpleBooleanProperty((provable == 1));
         this.family = new SimpleStringProperty(family);
         this.machine = new SimpleStringProperty(machine);
+        this.testset = new SimpleStringProperty(testset);
     }
 
     public String getName() {
@@ -60,4 +62,13 @@ public class TheoremTable {
     public void setMachine(String machine) {
         this.machine.set(machine);
     }
+
+    public String getTestset() {
+        return testset.get();
+    }
+
+    public void setTestset(String testset) {
+        this.testset.set(testset);
+    }
+
 }

@@ -6,9 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
-import java.util.Iterator;
-
-import javafx.collections.ObservableList;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @author eleonora
@@ -52,10 +51,13 @@ public class SqlLiteDb {
                     + "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                     + " NAME           CHAR(200)    NOT NULL,"
                     + " PROVER         CHAR(200)    NOT NULL,"
+                    + " TESTSET        CHAR(200)    NOT NULL,"
+                    + " FAMILY TEXT, "
                     + " PROVABLE       INTEGER    NOT NULL, "
                     + " SUCCESS        INTEGER    NOT NULL, "
-                    + " EXECUTION_TIME INTEGER NOT NULL, " + "FAMILY TEXT, "
-                    + "MACHINE_ID INTEGER" + ")";
+                    + " TIMEOUT        INTEGER, "
+                    + " EXECUTION_TIME INTEGER NOT NULL, "
+                    + " MACHINE_ID INTEGER" + ")";
             stmt.executeUpdate(sql);
 
             stmt.close();
@@ -67,18 +69,48 @@ public class SqlLiteDb {
         System.out.println("Table created successfully");
     }
 
+    private static void createDbViews() {
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+
+            stmt = conn.createStatement();
+
+            String sql = "CREATE VIEW \"provable_by_prover\" AS "
+                    + "SELECT count(*), testset, prover, machine_id"
+                    + "FROM theorem t  " + "WHERE provable =1 "
+                    + "GROUP BY prover " + "ORDER BY prover";
+            stmt.executeQuery(sql);
+
+            sql = "CREATE VIEW \"total_by_prover\" AS "
+                    + " SELECT count(*) as total, testset, prover, machine_id"
+                    + " FROM theorem t  " + " group by prover"
+                    + " ORDER BY prover";
+            stmt.executeQuery(sql);
+
+            stmt.close();
+            conn.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Views created successfully");
+    }
+
     public static void insertTheoremRow(String name, String prover,
-            int provable, int success, int executionTime, String family,
-            Integer machine_id) throws SQLException {
+            String family, String testset, int provable, int success,
+            int executionTime, Integer machine_id) throws SQLException {
         if (conn.isClosed() == true) {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
         stmt = conn.createStatement();
 
         String sql = "INSERT OR REPLACE into THEOREM"
-                + " (name, prover, provable, success, execution_time, family, machine_id) VALUES("
-                + "'" + name + "','" + prover + "'," + provable + "," + success
-                + "," + executionTime + ",'" + family + "'," + machine_id + ")";
+                + " (name, prover, family, testset, provable, success, execution_time, machine_id) "
+                + "VALUES(" + "'" + name + "','" + prover + "','" + family
+                + "','" + testset + "'," + provable + "," + success + ","
+                + executionTime + "," + machine_id + ")";
 
         stmt.execute(sql);
     }
@@ -105,7 +137,7 @@ public class SqlLiteDb {
 
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT t.id,  t.name, prover, provable, execution_time as execution, "
+            String sql = "SELECT t.id,  t.name, prover, testset, provable, execution_time as execution, "
                     + "success, family, m.name as machine "
                     + " FROM theorem t  LEFT JOIN machine m "
                     + " ON m.id = t.machine_id";
@@ -158,7 +190,8 @@ public class SqlLiteDb {
     }
 
     public static ResultSet getTheoremsFromSearch(Integer machine,
-            ObservableList<String> provers) throws SQLException {
+            String testset, List<String> selectedProvers) throws SQLException {
+        System.out.println("getTheoremsFromSearch" + selectedProvers);
         if (conn.isClosed() == true) {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
@@ -166,12 +199,12 @@ public class SqlLiteDb {
         try {
             stmt = conn.createStatement();
             String sql = "SELECT t.id,  t.name as name, prover, provable, "
-                    + "execution_time as execution, "
-                    + "success, family, m.name as machine "
+                    + " execution_time as execution, testset,"
+                    + " success, family, m.name as machine "
                     + " FROM theorem t  LEFT JOIN machine m "
                     + " ON m.id = t.machine_id" + " WHERE m.id = " + machine
-                    + " AND prover IN (";
-            Iterator<String> iter = provers.iterator();
+                    + " AND testset ='" + testset + "'" + " AND prover IN (";
+            ListIterator<String> iter = selectedProvers.listIterator();
             while (iter.hasNext()) {
                 sql += "'" + iter.next().toUpperCase() + "'";
                 if (!iter.hasNext())
@@ -190,19 +223,39 @@ public class SqlLiteDb {
         return null;
     }
 
-    public static ResultSet getAllProvers() throws SQLException {
+    public static ResultSet getAllTestsetProvers(String testset)
+            throws SQLException {
         if (conn.isClosed() == true) {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
 
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT distinct(prover) from theorem";
+            String sql = "SELECT distinct(prover) FROM theorem WHERE testset ='"
+                    + testset.toUpperCase() + "'";
             ResultSet res = stmt.executeQuery(sql);
             return res;
 
         } catch (Exception e) {
             System.err.println("ERRORE getAllProvers : " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static ResultSet getAllTestsets() throws SQLException {
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT distinct(testset) as name FROM theorem";
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err.println("ERRORE getAllTestsets : " + e.getMessage());
         }
         return null;
     }
@@ -304,6 +357,7 @@ public class SqlLiteDb {
             stmt.executeQuery("SELECT count(*) FROM machine");
         } catch (SQLException e) {
             createDbTables();
+            createDbViews();
         }
 
     }
@@ -333,4 +387,39 @@ public class SqlLiteDb {
 
     }
 
+    public static ResultSet getTotals(Integer machine, String testset,
+            List<String> selectedProvers) throws SQLException {
+        if (conn.isClosed() == true) {
+            System.out.println("Connection closed, be reopen");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT total_provable, total, t.prover, t.testset, "
+                    + "t.family, m.name as machine_name"
+                    + " FROM total_by_prover t "
+                    + " LEFT JOIN provable_by_prover p"
+                    + " ON (p.testset = t.testset "
+                    + " AND p.prover = t.prover "
+                    + " AND p.machine_id=t.machine_id)"
+                    + " LEFT JOIN machine m  ON m.id = t.machine_id "
+                    + " WHERE m.id = " + machine + " AND t.testset ='"
+                    + testset + "'" + " AND t.prover IN (";
+            ListIterator<String> iter = selectedProvers.listIterator();
+            while (iter.hasNext()) {
+                sql += "'" + iter.next().toUpperCase() + "'";
+                if (!iter.hasNext())
+                    break;
+                sql += ",";
+            }
+            sql += ") ";
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err.println("ERRORE getAllMachines : " + e.getMessage());
+        }
+        return null;
+    }
 }

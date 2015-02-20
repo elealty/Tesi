@@ -48,6 +48,8 @@ public class AllTheoremController extends BaseController {
     TableColumn<TheoremTable, Boolean>   itemProvableCol;
     @FXML
     TableColumn<TheoremTable, String>    itemMachineCol;
+    @FXML
+    TableColumn<TheoremTable, String>    itemTestsetCol;
 
     private ObservableList<TheoremTable> masterData = FXCollections
                                                             .observableArrayList();
@@ -103,6 +105,9 @@ public class AllTheoremController extends BaseController {
         itemProverCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
                         "prover"));
+        itemTestsetCol
+                .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
+                        "testset"));
         itemProverCol.setCellFactory(column -> {
             return new TableCell<TheoremTable, String>() {
                 @Override
@@ -167,9 +172,9 @@ public class AllTheoremController extends BaseController {
             ResultSet mr = SqlLiteDb.getAllTheorems();
             while (mr.next()) {
                 TheoremTable t = new TheoremTable(mr.getString("name"),
-                        mr.getString("prover"), mr.getInt("execution"),
-                        mr.getInt("provable"), mr.getString("family"),
-                        mr.getString("machine"));
+                        mr.getString("prover"), mr.getString("testset"),
+                        mr.getInt("execution"), mr.getInt("provable"),
+                        mr.getString("family"), mr.getString("machine"));
                 masterData.add(t);
             }
         } catch (SQLException e) {

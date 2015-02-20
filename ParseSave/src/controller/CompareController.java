@@ -3,41 +3,59 @@ package controller;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import model.Machine;
+import model.Prover;
+import model.SummaryTable;
 import model.TheoremTable;
+
+import org.controlsfx.dialog.ProgressDialog;
+
 import dbconnection.SqlLiteDb;
 
 /**
@@ -45,53 +63,114 @@ import dbconnection.SqlLiteDb;
  */
 public class CompareController extends BaseController {
     @FXML
-    TableColumn<TheoremTable, String>    itemNameCompareCol;
+    private TableView<TheoremTable>            tableViewComparedTheorem;
     @FXML
-    TableColumn<TheoremTable, Integer>   itemExecutionCompareCol;
+    private TableColumn<TheoremTable, String>  itemNameCompareCol;
     @FXML
-    TableColumn<TheoremTable, Boolean>   itemProvableCompareCol;
+    private TableColumn<TheoremTable, Integer> itemExecutionCompareCol;
     @FXML
-    TableColumn<TheoremTable, String>    itemProverCompareCol;
+    private TableColumn<TheoremTable, Boolean> itemProvableCompareCol;
+    @FXML
+    private TableColumn<TheoremTable, String>  itemProverCompareCol;
+    @FXML
+    private TableColumn<TheoremTable, String>  itemTestsetCompareCol;
 
     @FXML
-    TableView<TheoremTable>              tableViewComparedTheorem;
+    private ComboBox<Machine>                  cmbMachine;
+    @FXML
+    private ComboBox<String>                   cmbTestset;
+    @FXML
+    private ListView<Prover>                   listProvers;
+
+    private ObservableList<TheoremTable>       tData              = FXCollections
+                                                                          .observableArrayList();
+    private ObservableList<Machine>            machineBoxData     = FXCollections
+                                                                          .observableArrayList();
+    private ObservableList<String>             testsetsData       = FXCollections
+                                                                          .observableArrayList();
+    private ObservableList<Prover>             provers            = FXCollections
+                                                                          .observableArrayList();
+    private ObservableList<SummaryTable>       sumData            = FXCollections
+                                                                          .observableArrayList();
 
     @FXML
-    ComboBox<Machine>                    cmbMachine;
-    @FXML
-    ListView<String>                     listTestset;
+    Button                                     buttonSearch;
 
-    private ObservableList<TheoremTable> tData          = FXCollections
-                                                                .observableArrayList();
-    private ObservableList<Machine>      machineBoxData = FXCollections
-                                                                .observableArrayList();
+    private DoubleProperty                     iniWidth;
     @FXML
-    private BarChart<String, Number>     executionChart;
+    ScrollPane                                 scrollPaneChart;
+    @FXML
+    private BarChart<String, Number>           executionChart;
 
-    ObservableList<String>               provers        = FXCollections
-                                                                .observableArrayList();
     @FXML
-    Button                               buttonSearch;
+    private CheckBox                           chkAllProvers;
 
-    private DoubleProperty               iniWidth;
     @FXML
-    ScrollPane                           scrollPaneChart;
+    private TableView<SummaryTable>            tableViewSummary;
+
+    @FXML
+    private TableColumn<SummaryTable, String>  itemProverSum;
+    @FXML
+    private TableColumn<SummaryTable, String>  itemFamilySum;
+    @FXML
+    private TableColumn<SummaryTable, String>  itemTestsetSum;
+    @FXML
+    private TableColumn<SummaryTable, Integer> itemTotalSum;
+    @FXML
+    private TableColumn<SummaryTable, Integer> itemProvableSum;
+    @FXML
+    private TableColumn<SummaryTable, String>  itemMachineSum;
+    Service<Void>                              service;
+
+    ProgressDialog                             progDiag;
+
+    @FXML
+    ProgressBar                                searchingIndicator = new ProgressBar(
+                                                                          0);
+    @FXML
+    Tab                                        tabChart;
+    @FXML
+    TabPane                                    tabCompare;
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle arg1) {
-        listTestset.getSelectionModel()
-                .setSelectionMode(SelectionMode.MULTIPLE);
-        listTestset.setItems(getAllProver());
+        configuteTableView();
 
-        configureItems();
+        configureMachineChoices();
+
+        configureListProver();
+
+        configureTestsetChoice();
+        configureSummaryTableView();
 
         populateMachineChoice();
+        populateTestsetChoice();
         configureCharts();
-        executionChart.addEventFilter(ScrollEvent.ANY, new ZoomHandler());
 
         iniWidth = new SimpleDoubleProperty();
         iniWidth.set(100.0d);
 
+        chkAllProvers.selectedProperty().addListener(
+                new ChangeListener<Boolean>() {
+                    public void changed(ObservableValue<? extends Boolean> ov,
+                            Boolean old_val, Boolean new_val) {
+                        provers.forEach((prover) -> prover.setSelected(new_val));
+                    }
+                });
+        searchingIndicator.setVisible(false);
+        tabCompare.getSelectionModel().selectedIndexProperty()
+                .addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> ov,
+                            Number oldValue, Number newValue) {
+                        if ((Integer) newValue == 1) {
+                            setChartData();
+                        }
+                        if ((Integer) newValue == 2) {
+                            setSummaryTableData();
+                        }
+                    }
+                });
     }
 
     private void populateMachineChoice() {
@@ -105,28 +184,121 @@ public class CompareController extends BaseController {
                                 .getString("description")));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            showWarningMessage("Error loading Machine data", e.toString());
         }
         cmbMachine.setItems(machineBoxData);
     }
 
-    private ObservableList<String> getAllProver() {
+    private void populateTestsetChoice() {
+        cmbTestset.getItems().clear();
         try {
-            ResultSet mr = SqlLiteDb.getAllProvers();
-            while (mr.next()) {
-                provers.add(mr.getString("prover"));
+            ResultSet resAllTestset = SqlLiteDb.getAllTestsets();
+
+            while (resAllTestset.next()) {
+                testsetsData.add(resAllTestset.getString("name"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return provers;
+        cmbTestset.setItems(testsetsData);
     }
 
     private void configureCharts() {
-
+        executionChart.addEventFilter(ScrollEvent.ANY, new ZoomHandler());
     }
 
-    private void configureItems() {
+    private void configureTestsetChoice() {
+        cmbTestset.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable,
+                    String oldValue, String newValue) {
+                provers.clear();
+                chkAllProvers.setSelected(false);
+                loadAllProvers(newValue);
+                Machine selectedMachine = cmbMachine.getSelectionModel()
+                        .getSelectedItem();
+                if (selectedMachine != null && newValue != null) {
+                    buttonSearch.setDisable(false);
+                } else {
+                    buttonSearch.setDisable(true);
+                }
+            }
+        });
+
+        cmbTestset.setOnAction((event) -> {
+            String selectedTestset = cmbTestset.getSelectionModel()
+                    .getSelectedItem();
+            if (selectedTestset != null) {
+                buttonSearch.setDisable(false);
+            }
+
+        });
+    }
+
+    private void configureListProver() {
+        listProvers.getSelectionModel()
+                .setSelectionMode(SelectionMode.MULTIPLE);
+
+        Callback<Prover, ObservableValue<Boolean>> getProperty = new Callback<Prover, ObservableValue<Boolean>>() {
+            @Override
+            public BooleanProperty call(Prover prov) {
+                return prov.selectedProperty();
+            }
+        };
+        Callback<ListView<Prover>, ListCell<Prover>> forListView = CheckBoxListCell
+                .forListView(getProperty);
+        listProvers.setCellFactory(forListView);
+        listProvers.setItems(provers);
+    }
+
+    private void configureMachineChoices() {
+        cmbMachine.setCellFactory((comboBox) -> {
+            return new ListCell<Machine>() {
+                @Override
+                protected void updateItem(Machine item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                    } else {
+                        setText(item.name);
+                    }
+                }
+            };
+        });
+
+        cmbMachine.setOnAction((event) -> {
+            Machine selectedMachine = cmbMachine.getSelectionModel()
+                    .getSelectedItem();
+            String testsetVal = cmbTestset.getValue();
+            chkAllProvers.setSelected(false);
+            if (selectedMachine != null && testsetVal != null) {
+                buttonSearch.setDisable(false);
+            }
+
+        });
+
+        cmbMachine.setConverter(new StringConverter<Machine>() {
+            @Override
+            public String toString(Machine machine) {
+                if (machine == null) {
+                    return null;
+                } else {
+                    return machine.name;
+                }
+            }
+
+            @Override
+            public Machine fromString(String personString) {
+                return null;
+            }
+        });
+    }
+
+    private void configuteTableView() {
+
+        itemTestsetCompareCol
+                .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
+                        "testset"));
         itemNameCompareCol
                 .setCellValueFactory(new PropertyValueFactory<TheoremTable, String>(
                         "name"));
@@ -164,69 +336,108 @@ public class CompareController extends BaseController {
                 }
             };
         });
+    }
 
-        cmbMachine.setCellFactory((comboBox) -> {
-            return new ListCell<Machine>() {
-                @Override
-                protected void updateItem(Machine item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                    } else {
-                        setText(item.name);
-                    }
-                }
-            };
+    private void configureSummaryTableView() {
+        itemTestsetSum
+                .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
+                        "testset"));
+        itemFamilySum
+                .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
+                        "family"));
+        itemMachineSum
+                .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
+                        "machineName"));
+
+        itemProvableSum
+                .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
+                        "totalProvable"));
+        itemTotalSum
+                .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
+                        "total"));
+    }
+
+    private void loadAllProvers(String testset) {
+        try {
+            ResultSet mr = SqlLiteDb.getAllTestsetProvers(testset);
+            while (mr.next()) {
+                provers.add(new Prover(false, mr.getString("prover")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<String> getSelectedProver() {
+        List<String> selected = new ArrayList<String>();
+        provers.forEach((prover) -> {
+            if (prover.getSelected() == true)
+                selected.add(selected.size(), prover.getName());
         });
 
-        cmbMachine.setOnAction((event) -> {
-            Machine selectedMachine = cmbMachine.getSelectionModel()
-                    .getSelectedItem();
-            if (selectedMachine != null) {
-                buttonSearch.setDisable(false);
-            }
+        return selected;
 
-        });
-
-        cmbMachine.setConverter(new StringConverter<Machine>() {
-            @Override
-            public String toString(Machine machine) {
-                if (machine == null) {
-                    return null;
-                } else {
-                    return machine.name;
-                }
-            }
-
-            @Override
-            public Machine fromString(String personString) {
-                return null;
-            }
-        });
     }
 
     @FXML
     public void handleSearchAction() {
-        setTableData();
-        setChartData();
+        searchingIndicator.setVisible(true);
+        Task<Void> task = new Task<Void>() {
+            @Override
+            public Void call() {
+                setTableAndChartData();
+                updateProgress(this.getProgress(), this.getTotalWork());
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                searchingIndicator.setVisible(false);
+                // showInfoMessage("Search", "Search complete.");
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                searchingIndicator.setVisible(false);
+                updateMessage("Failed!");
+            }
+        };
+        searchingIndicator.progressProperty().bind(task.progressProperty());
+
+        if (getSelectedProver().isEmpty()) {
+            showInfoMessage("Selection empty", "Select almost one Prover.");
+        } else {
+            Thread th = new Thread(task);
+            th.setDaemon(true);
+            th.start();
+
+        }
+
     }
 
-    private void setTableData() {
+    private void setTableAndChartData() {
+        System.out.println("setTableAndChartData");
         tData.clear();
-        Integer machine_id = cmbMachine.getValue().id;
-        try {
-            ResultSet mr = SqlLiteDb.getTheoremsFromSearch(machine_id,
-                    listTestset.getSelectionModel().getSelectedItems());
 
+        Integer machine_id = cmbMachine.getValue().id;
+        String testset = cmbTestset.getValue();
+        List<String> selectedProvers = getSelectedProver();
+
+        try {
+            ResultSet mr = SqlLiteDb.getTheoremsFromSearch(machine_id, testset,
+                    selectedProvers);
+            System.out.println("result" + mr.getFetchSize());
             if (!mr.next()) {
                 showInfoMessage("Search", "No theorems found.");
             }
 
             while (mr.next()) {
                 TheoremTable t = new TheoremTable(mr.getString("name"),
-                        mr.getString("prover"), mr.getInt("execution"),
-                        mr.getInt("provable"), mr.getString("family"),
-                        mr.getString("machine"));
+                        mr.getString("prover"), mr.getString("testset"),
+                        mr.getInt("execution"), mr.getInt("provable"),
+                        mr.getString("family"), mr.getString("machine"));
                 tData.add(t);
             }
             tableViewComparedTheorem.setItems(tData);
@@ -237,21 +448,28 @@ public class CompareController extends BaseController {
     }
 
     private void setChartData() {
+        System.out.println("setChartData");
+        tData.clear();
         String curr_prover = "";
-
         XYChart.Series<String, Number> prover_serie = new XYChart.Series<String, Number>();
 
         Integer machine_id = cmbMachine.getValue().id;
+        String testset = cmbTestset.getValue();
+        List<String> selectedProvers = getSelectedProver();
+
         try {
-            ResultSet mr = SqlLiteDb.getTheoremsFromSearch(machine_id,
-                    listTestset.getSelectionModel().getSelectedItems());
+            ResultSet mr = SqlLiteDb.getTheoremsFromSearch(machine_id, testset,
+                    selectedProvers);
+
+            if (!mr.next()) {
+                showInfoMessage("Search", "No theorems found.");
+            }
 
             while (mr.next()) {
                 if (mr.isFirst()) {
                     curr_prover = mr.getString("prover");
                     prover_serie.setName(curr_prover);
                 }
-
                 if (curr_prover.compareTo(mr.getString("prover")) != 0) {
                     curr_prover = mr.getString("prover");
                     executionChart.getData().add(prover_serie);
@@ -266,29 +484,12 @@ public class CompareController extends BaseController {
                 if (!mr.next()) {
                     executionChart.getData().add(prover_serie);
                 }
-
             }
+            tableViewComparedTheorem.setItems(tData);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    private static double getSceneShiftX(Node node) {
-        double shift = 0;
-        do {
-            shift += node.getLayoutX();
-            node = node.getParent();
-        } while (node != null);
-        return shift;
-    }
-
-    private static double getSceneShiftY(Node node) {
-        double shift = 0;
-        do {
-            shift += node.getLayoutY();
-            node = node.getParent();
-        } while (node != null);
-        return shift;
     }
 
     private class ZoomHandler implements EventHandler<ScrollEvent> {
@@ -350,4 +551,33 @@ public class CompareController extends BaseController {
         }
     }
 
+    private void setSummaryTableData() {
+        Integer machine_id = cmbMachine.getValue().id;
+        String testset = cmbTestset.getValue();
+        List<String> selectedProvers = getSelectedProver();
+
+        try {
+            ResultSet mr = SqlLiteDb.getTotals(machine_id, testset,
+                    selectedProvers);
+
+            while (mr.next()) {
+                SummaryTable s = new SummaryTable(mr.getString("prover"),
+                        mr.getString("family"), mr.getString("testset"),
+                        mr.getInt("total_provable"), mr.getInt("total"),
+                        mr.getString("machine_name"));
+                sumData.add(s);
+
+            }
+            tableViewSummary.setItems(sumData);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    protected void handleSelectChartTab(ActionEvent event) {
+        System.out.println("HANDLE SELECT CHART");
+        // setChartData();
+    }
 }

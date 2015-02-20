@@ -15,7 +15,7 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
    <children>
-       <Label prefHeight="13.0" prefWidth="226.0" style="-fx-font: NORMAL 20 Tahoma;" text="Machines" GridPane.columnIndex="0" GridPane.rowIndex="0">
+       <Label prefHeight="13.0" prefWidth="226.0" style="-fx-font: NORMAL 20 Tahoma;" textFill="#378dd3" text="Machines" GridPane.columnIndex="0" GridPane.rowIndex="0">
     </Label>
        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="1100.0" style="-: #000;" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
    <children>

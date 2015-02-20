@@ -28,7 +28,7 @@ public class MainController extends BaseController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            handleTheoremListAction(new ActionEvent());
+            handleCompareTheoremAction(new ActionEvent());
         } catch (IOException e) {
             showErrorMessage(e.getMessage());
         }
@@ -87,7 +87,6 @@ public class MainController extends BaseController {
     @FXML
     private void handleCompareTheoremAction(ActionEvent event)
             throws IOException {
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                 "/view/CompareTheorems.fxml"));
         Pane cmdPane = (Pane) fxmlLoader.load();
