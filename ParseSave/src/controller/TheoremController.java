@@ -76,15 +76,15 @@ public class TheoremController extends BaseController {
                         TheoremParser.processFile(file, machine_id);
 
                     } catch (IOException e) {
-                        this.cancel();
+                        this.cancel(true);
                         loadingIndicator.setVisible(false);
                         showErrorMessage(e.toString());
                     } catch (SQLException e) {
-                        this.cancel();
+                        this.cancel(true);
                         loadingIndicator.setVisible(false);
                         showErrorMessage(e.toString());
                     } catch (Exception e) {
-                        this.cancel();
+                        this.cancel(true);
                         loadingIndicator.setVisible(false);
                         showErrorMessage(e.toString());
 

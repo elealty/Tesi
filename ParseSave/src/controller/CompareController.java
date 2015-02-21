@@ -23,6 +23,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
@@ -63,6 +64,8 @@ import dbconnection.SqlLiteDb;
  * @author eleonora
  */
 public class CompareController extends BaseController {
+    private static final String                RANDOMXX           = "RANDOMXX";
+    private static final String                SYJ                = "SYJ";
     @FXML
     private TableView<TheoremTable>            tableViewComparedTheorem;
     @FXML
@@ -138,7 +141,9 @@ public class CompareController extends BaseController {
     @FXML
     VBox                                       SYJSummary;
     @FXML
-    StackPane                                  stackedSummary;
+    StackPane                                  stackPaneChart;
+
+    LineChart<Number, Number>                  lineRandChart;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -177,7 +182,7 @@ public class CompareController extends BaseController {
                             setChartData();
                         }
                         if ((Integer) newValue == 2) {
-                            setSummaryTableData();
+                            setSummaryData();
                         }
                     }
                 });
@@ -238,20 +243,16 @@ public class CompareController extends BaseController {
                     buttonSearch.setDisable(true);
                 }
 
-                SYJSummary.setVisible(false);
-                randSummary.setVisible(false);
-                stackedSummary.getChildren().get(0).setVisible(true);
-                stackedSummary.getChildren().get(1).setVisible(true);
                 switch (newValue) {
-                case "SYJ":
-                    stackedSummary.getChildren().get(0).setVisible(true);
+                case SYJ:
+                    stackPaneChart.getChildren().get(0).toFront();
                     break;
-                case "RANDOMXX":
-                    stackedSummary.getChildren().get(1).setVisible(true);
+                case RANDOMXX:
+                    stackPaneChart.getChildren().get(1).toFront();
                     break;
                 default:
-                    stackedSummary.getChildren().get(0).setVisible(false);
-                    stackedSummary.getChildren().get(1).setVisible(false);
+                    stackPaneChart.getChildren().get(0).toBack();
+                    stackPaneChart.getChildren().get(1).toBack();
                     break;
                 }
             }
@@ -302,12 +303,12 @@ public class CompareController extends BaseController {
             Machine selectedMachine = cmbMachine.getSelectionModel()
                     .getSelectedItem();
             String testsetVal = cmbTestset.getValue();
-            chkAllProvers.setSelected(false);
-            if (selectedMachine != null && testsetVal != null) {
-                buttonSearch.setDisable(false);
-            }
+            // chkAllProvers.setSelected(false);
+                if (selectedMachine != null && testsetVal != null) {
+                    buttonSearch.setDisable(false);
+                }
 
-        });
+            });
 
         cmbMachine.setConverter(new StringConverter<Machine>() {
             @Override
@@ -491,10 +492,13 @@ public class CompareController extends BaseController {
     @FXML
     public void handleSearchAction() {
         searchingIndicator.setVisible(true);
+        tableViewSummary.getItems().clear();
+        tData.clear();
+        System.out.println("handleSearch" + tData);
         Task<Void> task = new Task<Void>() {
             @Override
             public Void call() {
-                setTableAndChartData();
+                setTableData();
                 updateProgress(this.getProgress(), this.getTotalWork());
                 return null;
             }
@@ -526,8 +530,9 @@ public class CompareController extends BaseController {
 
     }
 
-    private void setTableAndChartData() {
+    private void setTableData() {
         System.out.println("setTableAndChartData");
+        tableViewSummary.getItems().clear();
         tData.clear();
 
         Integer machine_id = cmbMachine.getValue().id;
@@ -661,7 +666,7 @@ public class CompareController extends BaseController {
         }
     }
 
-    private void setSummaryTableData() {
+    private void setSummaryData() {
         Integer machine_id = cmbMachine.getValue().id;
         String testset = cmbTestset.getValue();
         List<String> selectedProvers = getSelectedProver();
@@ -683,6 +688,36 @@ public class CompareController extends BaseController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setRandSummaryData() {
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Number of Month");
+
+        lineRandChart = new LineChart<Number, Number>(xAxis, yAxis);
+
+        lineRandChart.setTitle("Stock Monitoring, 2010");
+
+        // XYChart.Series series = new XYChart.Series();
+        XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
+
+        series.setName("My portfolio");
+
+        series.getData().add(new Data<Number, Number>(1, 23));
+        series.getData().add(new Data<Number, Number>(2, 14));
+        series.getData().add(new Data<Number, Number>(3, 15));
+        series.getData().add(new Data<Number, Number>(4, 24));
+        series.getData().add(new Data<Number, Number>(5, 34));
+        series.getData().add(new Data<Number, Number>(6, 36));
+        series.getData().add(new Data<Number, Number>(7, 22));
+        series.getData().add(new Data<Number, Number>(8, 45));
+        series.getData().add(new Data<Number, Number>(9, 43));
+        series.getData().add(new Data<Number, Number>(10, 17));
+        series.getData().add(new Data<Number, Number>(11, 29));
+        series.getData().add(new Data<Number, Number>(12, 25));
+
+        lineRandChart.getData().add(series);
     }
 
 }

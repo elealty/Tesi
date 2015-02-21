@@ -57,13 +57,24 @@ public class SqlLiteDb {
                     + " SUCCESS        INTEGER    NOT NULL, "
                     + " TIMEOUT        INTEGER, "
                     + " EXECUTION_TIME INTEGER NOT NULL, "
-                    + " MACHINE_ID INTEGER" + ")";
+                    + " MACHINE_ID INTEGER, " + " MAX_TIMEOUT        INTEGER "
+                    + ")";
             stmt.executeUpdate(sql);
+
+            sql = "CREATE INDEX testset_idx ON theorem(testset)";
+            stmt.execute(sql);
+            sql = "CREATE INDEX prover_idx ON theorem(prover)";
+            stmt.execute(sql);
+            sql = "CREATE INDEX family_idx ON theorem(family)";
+            stmt.execute(sql);
+            sql = "CREATE UNIQUE INDEX \"unique_testset_prover_family\" "
+                    + "ON theorem (PROVER ASC, TESTSET ASC, FAMILY ASC)";
+            stmt.execute(sql);
 
             stmt.close();
             conn.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.err.println("ERROR createDbTables:" + e.getMessage());
             System.exit(0);
         }
         System.out.println("Table created successfully");
@@ -81,20 +92,20 @@ public class SqlLiteDb {
                     + " SELECT count(*) as total_provable, family, testset, "
                     + " sum(execution_time) as execution_sum,"
                     + " prover, machine_id FROM theorem t"
-                    + " WHERE provable = 1 GROUP BY prover family"
+                    + " WHERE provable = 1 GROUP BY prover, family"
                     + " ORDER BY prover, family";
-            stmt.executeQuery(sql);
+            stmt.execute(sql);
 
             sql = "CREATE VIEW \"total_by_prover\" AS "
                     + " SELECT count(*) as total, testset, family, prover, machine_id"
                     + " FROM theorem t" + " GROUP BY prover, family"
                     + " ORDER BY prover, family";
-            stmt.executeQuery(sql);
+            stmt.execute(sql);
 
             stmt.close();
             conn.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.err.println("ERROR createDbViews:" + e.getMessage());
             System.exit(0);
         }
         System.out.println("Views created successfully");
@@ -102,19 +113,21 @@ public class SqlLiteDb {
 
     public static void insertTheoremRow(String name, String prover,
             String family, String testset, int provable, int success,
-            int executionTime, int timeout, int machine_id) throws SQLException {
-        System.out.println("insertTheoremRow");
+            int executionTime, int timeout, int machine_id, int max_timeout)
+            throws SQLException {
+
         if (conn.isClosed() == true) {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
         stmt = conn.createStatement();
-
+        stmt.setQueryTimeout(10);
         String sql = "INSERT OR REPLACE into THEOREM"
                 + " (name, prover, family, testset, provable, success, "
-                + "execution_time, timeout, machine_id) " + "VALUES(" + "'"
-                + name + "','" + prover + "','" + family + "','" + testset
-                + "'," + provable + "," + success + "," + executionTime + ","
-                + timeout + "," + machine_id + ")";
+                + "execution_time, timeout, machine_id, max_timeout) "
+                + "VALUES(" + "'" + name + "','" + prover + "','" + family
+                + "','" + testset + "'," + provable + "," + success + ","
+                + executionTime + "," + timeout + "," + machine_id + ","
+                + max_timeout + ")";
 
         stmt.execute(sql);
     }
