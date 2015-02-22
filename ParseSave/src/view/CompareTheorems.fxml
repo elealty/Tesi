@@ -109,23 +109,22 @@
                                         </BarChart>
                                        </content>
                                     </ScrollPane>
-                                    <Label text="Use Ctrl + mouse to zoom" />
+                                    <Label prefHeight="15.0" prefWidth="349.0" text="Use Ctrl + mouse to zoom" wrapText="true" VBox.vgrow="NEVER" />
                                  </children>
                               </VBox>
                                <VBox fx:id="randSummary">
                                  <children>
                                     <ScrollPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefViewportHeight="513.0" prefViewportWidth="690.0" VBox.vgrow="ALWAYS">
                                        <content>
-                                          <LineChart fx:id="lineRandChart" legendSide="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                                          <LineChart fx:id="lineRandChart" legendSide="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="545.0" prefWidth="757.0">
                                             <xAxis>
-                                              <CategoryAxis label="Size" side="BOTTOM" />
+                                              <CategoryAxis side="BOTTOM" />
                                             </xAxis>
                                             <yAxis>
                                               <NumberAxis label="Time (s)" side="LEFT" />
                                             </yAxis>
                                           </LineChart>
                                        </content></ScrollPane>
-                                    <Label text="Use Ctrl + mouse to zoom" />
                                  </children>
                               </VBox>
                            </children>

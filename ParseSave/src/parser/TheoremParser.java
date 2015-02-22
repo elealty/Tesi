@@ -99,7 +99,6 @@ public class TheoremParser {
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
         while ((strLine = br.readLine()) != null) {
-            System.out.println("strline" + strLine);
             if (strLine.startsWith(COMMON_PROVER_HEADER)) {
                 prover = getInfoFromHeader(strLine, COMMON_HEADER);
                 continue;

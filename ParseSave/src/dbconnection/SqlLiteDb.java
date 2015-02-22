@@ -67,8 +67,8 @@ public class SqlLiteDb {
             stmt.execute(sql);
             sql = "CREATE INDEX family_idx ON theorem(family)";
             stmt.execute(sql);
-            sql = "CREATE UNIQUE INDEX \"unique_testset_prover_family\" "
-                    + "ON theorem (PROVER ASC, TESTSET ASC, FAMILY ASC)";
+            sql = "CREATE UNIQUE INDEX \"unique_theorem\" ON theorem "
+                    + "(TESTSET ASC, PROVER ASC,  FAMILY ASC, NAME ASC, MACHINE_ID ASC)";
             stmt.execute(sql);
 
             stmt.close();
@@ -89,16 +89,24 @@ public class SqlLiteDb {
             stmt = conn.createStatement();
 
             String sql = "CREATE VIEW \"provable_by_prover\" AS "
-                    + " SELECT count(*) as total_provable, family, testset, "
-                    + " sum(execution_time) as execution_sum,"
-                    + " prover, machine_id FROM theorem t"
-                    + " WHERE provable = 1 GROUP BY prover, family"
+                    + " SELECT testset, family,  prover, machine_id , "
+                    + " count(*) as total_provable, sum(execution_time) as execution_sum"
+                    + " FROM theorem t WHERE provable = 1 "
+                    + " GROUP BY prover, family, machine_id "
                     + " ORDER BY prover, family";
             stmt.execute(sql);
 
             sql = "CREATE VIEW \"total_by_prover\" AS "
-                    + " SELECT count(*) as total, testset, family, prover, machine_id"
-                    + " FROM theorem t" + " GROUP BY prover, family"
+                    + " SELECT testset, prover, family,  count(*) as total, machine_id "
+                    + " FROM theorem t GROUP BY prover, family, machine_id "
+                    + " ORDER BY prover, family";
+            stmt.execute(sql);
+
+            sql = "CREATE VIEW \"unprovable_by_prover\" AS"
+                    + " SELECT testset, prover, family, max_timeout, "
+                    + " machine_id, count(*) as total_unprovable"
+                    + " FROM theorem t" + " WHERE provable <> 1"
+                    + " GROUP BY prover, family, machine_id"
                     + " ORDER BY prover, family";
             stmt.execute(sql);
 
@@ -128,7 +136,7 @@ public class SqlLiteDb {
                 + "','" + testset + "'," + provable + "," + success + ","
                 + executionTime + "," + timeout + "," + machine_id + ","
                 + max_timeout + ")";
-
+        System.out.println(sql);
         stmt.execute(sql);
     }
 
@@ -431,13 +439,20 @@ public class SqlLiteDb {
 
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT total_provable, total, t.prover, t.testset,"
-                    + "t.family, p.execution_sum " + " FROM total_by_prover t "
+            String sql = "SELECT distinct total_provable, total, t.prover, t.testset,"
+                    + "t.family, p.execution_sum "
+                    + " FROM total_by_prover t "
                     + " LEFT JOIN provable_by_prover p"
                     + " ON (p.testset = t.testset "
-                    + " AND p.prover = t.prover " + " AND p.family = t.family "
-                    + ")" + " WHERE p.testset ='" + testset
-                    + "' AND upper(p.prover) IN (";
+                    + " AND p.prover = t.prover "
+                    + " AND p.family = t.family "
+                    + ")"
+                    + " WHERE t.testset ='"
+                    + testset
+                    + "'"
+                    + " AND t.machine_id ="
+                    + machine
+                    + " AND upper(t.prover) IN (";
             ListIterator<String> iter = selectedProvers.listIterator();
             while (iter.hasNext()) {
                 sql += "'" + iter.next().toUpperCase() + "'";
@@ -445,7 +460,7 @@ public class SqlLiteDb {
                     break;
                 sql += ",";
             }
-            sql += ")" + " GROUP BY t.prover, t.family"
+            sql += ")" + " GROUP BY t.prover, t.family, t.machine_id"
                     + " ORDER BY t.prover, t.family";
             System.out.println(sql);
             ResultSet res = stmt.executeQuery(sql);
@@ -490,4 +505,45 @@ public class SqlLiteDb {
         return null;
     }
 
+    public static ResultSet getMediaTheoremsTimeoutFromSearch(Integer machine,
+            String testset, List<String> selectedProvers) throws SQLException {
+        System.out.println("getMediaTheoremsTimeoutFromSearch");
+        if (conn.isClosed() == true) {
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = " SELECT t.prover, t.family as name, "
+                    // +"total, execution_sum as T1, "
+                    // + " total_provable, total_unprovable, max_timeout, "
+                    // + "(total_unprovable * max_timeout) as T2,"
+                    + " (( cast(execution_sum as real) + cast((total_unprovable * max_timeout) as real)) / total ) as execution"
+                    + " FROM total_by_prover t  "
+                    + " LEFT JOIN unprovable_by_prover up"
+                    + "    ON (up.testset = t.testset "
+                    + "    AND up.prover = t.prover AND up.family = t.family )"
+                    + " LEFT JOIN provable_by_prover p "
+                    + "    ON (p.testset = t.testset  "
+                    + "    AND p.prover = t.prover  AND p.family = t.family ) "
+                    + " WHERE t.machine_id = " + machine + " AND t.testset ='"
+                    + testset + "'" + " AND t.prover IN (";
+            ListIterator<String> iter = selectedProvers.listIterator();
+            while (iter.hasNext()) {
+                sql += "'" + iter.next().toUpperCase() + "'";
+                if (!iter.hasNext())
+                    break;
+                sql += ",";
+            }
+            sql += ") GROUP BY t.prover, t.family, t.machine_id ORDER BY t.prover, t.family";
+            System.out.println(sql);
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err.println("ERRORE getMediaTheoremsTimeoutFromSearch : "
+                    + e.getMessage());
+        }
+        return null;
+    }
 }
