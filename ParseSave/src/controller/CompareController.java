@@ -579,9 +579,6 @@ public class CompareController extends BaseController {
                 tData.add(t);
             }
             tableViewComparedTheorem.setItems(tData);
-            if (mr.getRow() == 0) {
-                lblInfoSearch.setText("No theorems founded.");
-            }
 
         } catch (SQLException e) {
             e.printStackTrace();
