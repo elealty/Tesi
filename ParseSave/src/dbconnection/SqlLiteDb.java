@@ -248,6 +248,40 @@ public class SqlLiteDb {
         return null;
     }
 
+    public static ResultSet getProvableTheoremsFromSearch(Integer machine,
+            String testset, List<String> selectedProvers) throws SQLException {
+        System.out.println("getTheoremsFromSearch" + selectedProvers);
+        if (conn.isClosed() == true) {
+            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
+        }
+
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT testset, prover, family, t.name as name, provable, execution_time as execution"
+                    + " FROM theorem t  LEFT JOIN machine m "
+                    + " ON m.id = t.machine_id"
+                    + " WHERE m.id = "
+                    + machine
+                    + " AND testset ='" + testset + "'" + " AND prover IN (";
+            ListIterator<String> iter = selectedProvers.listIterator();
+            while (iter.hasNext()) {
+                sql += "'" + iter.next().toUpperCase() + "'";
+                if (!iter.hasNext())
+                    break;
+                sql += ",";
+            }
+            sql += ") AND provable=1 ORDER BY prover";
+            System.out.println(sql);
+            ResultSet res = stmt.executeQuery(sql);
+            return res;
+
+        } catch (Exception e) {
+            System.err.println("ERRORE getTheoremsFromSearch : "
+                    + e.getMessage());
+        }
+        return null;
+    }
+
     public static ResultSet getAllTestsetProvers(String testset)
             throws SQLException {
         if (conn.isClosed() == true) {
@@ -473,38 +507,6 @@ public class SqlLiteDb {
         return null;
     }
 
-    public static ResultSet getSYJSummary(List<String> selectedProvers)
-            throws SQLException {
-        if (conn.isClosed() == true) {
-            System.out.println("Connection closed, be reopen");
-            conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
-        }
-
-        try {
-            stmt = conn.createStatement();
-            String sql = "SELECT total_provable, total, pbp.prover"
-                    + "FROM provable_by_prover pbp,"
-                    + "(SELECT count(*) as total, prover FROM theorem t"
-                    + " WHERE testset = 'SYJ' GROUP BY prover" + ") as counter"
-                    + "WHERE pbp.prover = counter.prover "
-                    + "AND t.prover IN (";
-            ListIterator<String> iter = selectedProvers.listIterator();
-            while (iter.hasNext()) {
-                sql += "'" + iter.next().toUpperCase() + "'";
-                if (!iter.hasNext())
-                    break;
-                sql += ",";
-            }
-            sql += ") ";
-            ResultSet res = stmt.executeQuery(sql);
-            return res;
-
-        } catch (Exception e) {
-            System.err.println("ERRORE getSyjSummary : " + e.getMessage());
-        }
-        return null;
-    }
-
     public static ResultSet getMediaTheoremsTimeoutFromSearch(Integer machine,
             String testset, List<String> selectedProvers) throws SQLException {
         System.out.println("getMediaTheoremsTimeoutFromSearch");
@@ -535,10 +537,10 @@ public class SqlLiteDb {
                     break;
                 sql += ",";
             }
-            sql += ") GROUP BY t.prover, t.family, t.machine_id ORDER BY t.prover, t.family";
+            sql += ") GROUP BY t.prover, t.family, t.machine_id "
+                    + "ORDER BY t.prover, t.family, name";
             System.out.println(sql);
-            ResultSet res = stmt.executeQuery(sql);
-            return res;
+            return stmt.executeQuery(sql);
 
         } catch (Exception e) {
             System.err.println("ERRORE getMediaTheoremsTimeoutFromSearch : "

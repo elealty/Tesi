@@ -17,20 +17,20 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.chart.Axis;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
@@ -41,6 +41,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -56,99 +57,95 @@ import model.Machine;
 import model.Prover;
 import model.SummaryTable;
 import model.TheoremTable;
-
-import org.controlsfx.dialog.ProgressDialog;
-
 import dbconnection.SqlLiteDb;
 
 /**
  * @author eleonora
  */
 public class CompareController extends BaseController {
-    private static final String                    RANDOMXX           = "RANDOMXX";
-    private static final String                    SYJ                = "SYJ";
+    private static final String                   RANDOMXX           = "RANDOMXX";
+    private static final String                   SYJ                = "SYJ";
     @FXML
-    private TableView<TheoremTable>                tableViewComparedTheorem;
+    private TableView<TheoremTable>               tableViewComparedTheorem;
     @FXML
-    private TableColumn<TheoremTable, String>      itemNameCompareCol;
+    private TableColumn<TheoremTable, String>     itemNameCompareCol;
     @FXML
-    private TableColumn<TheoremTable, Integer>     itemExecutionCompareCol;
+    private TableColumn<TheoremTable, Integer>    itemExecutionCompareCol;
     @FXML
-    private TableColumn<TheoremTable, Boolean>     itemProvableCompareCol;
+    private TableColumn<TheoremTable, Boolean>    itemProvableCompareCol;
     @FXML
-    private TableColumn<TheoremTable, String>      itemProverCompareCol;
+    private TableColumn<TheoremTable, String>     itemProverCompareCol;
     @FXML
-    private TableColumn<TheoremTable, String>      itemTestsetCompareCol;
+    private TableColumn<TheoremTable, String>     itemTestsetCompareCol;
 
     @FXML
-    private ComboBox<Machine>                      cmbMachine;
+    private ComboBox<Machine>                     cmbMachine;
     @FXML
-    private ComboBox<String>                       cmbTestset;
+    private ComboBox<String>                      cmbTestset;
     @FXML
-    private ListView<Prover>                       listProvers;
+    private ListView<Prover>                      listProvers;
 
-    private ObservableList<TheoremTable>           tData              = FXCollections
-                                                                              .observableArrayList();
+    private ObservableList<TheoremTable>          tData              = FXCollections
+                                                                             .observableArrayList();
 
-    private ObservableList<Machine>                machineBoxData     = FXCollections
-                                                                              .observableArrayList();
-    private ObservableList<String>                 testsetsData       = FXCollections
-                                                                              .observableArrayList();
-    private ObservableList<Prover>                 provers            = FXCollections
-                                                                              .observableArrayList();
-    private ObservableList<SummaryTable>           sumData            = FXCollections
-                                                                              .observableArrayList();
-
-    @FXML
-    Button                                         buttonSearch;
-
-    private DoubleProperty                         iniWidth;
-    @FXML
-    ScrollPane                                     scrollPaneChart;
-    @FXML
-    private BarChart<String, Number>               executionChart;
+    private ObservableList<Machine>               machineBoxData     = FXCollections
+                                                                             .observableArrayList();
+    private ObservableList<String>                testsetsData       = FXCollections
+                                                                             .observableArrayList();
+    private ObservableList<Prover>                provers            = FXCollections
+                                                                             .observableArrayList();
+    private ObservableList<SummaryTable>          sumData            = FXCollections
+                                                                             .observableArrayList();
 
     @FXML
-    private CheckBox                               chkAllProvers;
+    Button                                        buttonSearch;
+
+    private DoubleProperty                        iniWidth;
+    @FXML
+    ScrollPane                                    scrollPaneChart;
 
     @FXML
-    private TableView<SummaryTable>                tableViewSummary;
+    private CheckBox                              chkAllProvers;
 
     @FXML
-    private TableColumn<SummaryTable, String>      itemProverSum;
+    private TableView<SummaryTable>               tableViewSummary;
     @FXML
-    private TableColumn<SummaryTable, String>      itemFamilySum;
+    private TableColumn<SummaryTable, String>     itemProverSum;
     @FXML
-    private TableColumn<SummaryTable, String>      itemMachineSum;
+    private TableColumn<SummaryTable, String>     itemFamilySum;
     @FXML
-    private TableColumn<SummaryTable, Integer>     itemTotalSum;
+    private TableColumn<SummaryTable, String>     itemMachineSum;
     @FXML
-    private TableColumn<SummaryTable, Integer>     itemProvableSum;
+    private TableColumn<SummaryTable, Integer>    itemTotalSum;
     @FXML
-    private TableColumn<SummaryTable, Integer>     itemExecutionSum;
+    private TableColumn<SummaryTable, Integer>    itemProvableSum;
     @FXML
-    Service<Void>                                  service;
-
-    ProgressDialog                                 progDiag;
+    private TableColumn<SummaryTable, Integer>    itemExecutionSum;
 
     @FXML
-    ProgressBar                                    searchingIndicator = new ProgressBar(
-                                                                              0);
-    @FXML
-    Tab                                            tabChart;
-    @FXML
-    TabPane                                        tabCompare;
-    @FXML
-    VBox                                           randSummary;
-    @FXML
-    VBox                                           SYJSummary;
-    @FXML
-    StackPane                                      stackPaneChart;
-    @FXML
-    LineChart<String, Number>                      lineRandChart;
+    ProgressBar                                   searchingIndicator = new ProgressBar(
+                                                                             0);
 
-    private ObservableList<Series<String, Number>> chartData          = FXCollections
-                                                                              .observableArrayList();
+    @FXML
+    TabPane                                       tabCompare;
+    @FXML
+    Tab                                           tabListTheorem;
+    @FXML
+    Tab                                           tabChart;
+    @FXML
+    Tab                                           tabSummary;
+    @FXML
+    StackPane                                     stackPaneChart;
+
+    @FXML
+    private BarChart<String, Float>               executionChart;
+    @FXML
+    LineChart<String, Float>                      lineRandChart;
+
+    private ObservableList<Series<String, Float>> chartData          = FXCollections
+                                                                             .observableArrayList();
+    @FXML
+    Label                                         lblInfoSearch;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -185,6 +182,8 @@ public class CompareController extends BaseController {
                             Number oldValue, Number newValue) {
                         if ((Integer) newValue == 1) {
                             String testset = cmbTestset.getValue();
+                            executionChart.getData().clear();
+                            lineRandChart.getData().clear();
                             if (testset.compareTo(SYJ) == 0) {
                                 executionChart.setData(getChartData());
                             } else {
@@ -200,8 +199,31 @@ public class CompareController extends BaseController {
     }
 
     private void configureRandXXCharts() {
-        lineRandChart.addEventFilter(ScrollEvent.ANY, new ZoomHandler());
-
+        // // lineRandChart.setCreateSymbols(false);
+        // ValueAxis<Float> yAxis = (ValueAxis<Float>) lineRandChart.getYAxis();
+        //
+        // // yAxis.setMinorTickCount(10);
+        // // yAxis.setTickUnit(0.1);
+        //
+        // lineRandChart.getXAxis().setAutoRanging(true);
+        // lineRandChart.getYAxis().setAutoRanging(true);
+        // lineRandChart.getYAxis().setAnimated(true);
+        // lineRandChart.setOnMouseClicked(mouseHandler);
+        // lineRandChart.setOnScroll(scrollHandler);
+        // resetButton.setOnAction(new EventHandler<ActionEvent>() {
+        // @Override
+        // public void handle(ActionEvent event) {
+        // final NumberAxis xAxis = (NumberAxis)chart.getXAxis();
+        // xAxis.setLowerBound(0);
+        // xAxis.setUpperBound(1000);
+        // final NumberAxis yAxis = (NumberAxis)chart.getYAxis();
+        // yAxis.setLowerBound(0);
+        // yAxis.setUpperBound(1000);
+        //
+        // zoomRect.setWidth(0);
+        // zoomRect.setHeight(0);
+        // }
+        // });
     }
 
     private void populateMachineChoice() {
@@ -235,6 +257,7 @@ public class CompareController extends BaseController {
     }
 
     private void configureExecutionCharts() {
+        executionChart.getYAxis().setAutoRanging(false);
         executionChart.addEventFilter(ScrollEvent.ANY, new ZoomHandler());
     }
 
@@ -254,17 +277,13 @@ public class CompareController extends BaseController {
                     buttonSearch.setDisable(true);
                 }
 
-                switch (newValue) {
-                case SYJ:
+                System.out.println("change testste:" + newValue);
+                if (newValue.compareTo(SYJ) == 0) {
+                    System.out.println("front 0");
                     stackPaneChart.getChildren().get(0).toFront();
-                    break;
-                case RANDOMXX:
+                } else {
+                    System.out.println("front 1");
                     stackPaneChart.getChildren().get(1).toFront();
-                    break;
-                default:
-                    stackPaneChart.getChildren().get(0).toBack();
-                    stackPaneChart.getChildren().get(1).toBack();
-                    break;
                 }
             }
         });
@@ -503,13 +522,13 @@ public class CompareController extends BaseController {
     @FXML
     public void handleSearchAction() {
         searchingIndicator.setVisible(true);
-        tableViewSummary.getItems().clear();
-        tData.clear();
-        System.out.println("handleSearch" + tData);
+        tabCompare.getSelectionModel().select(tabListTheorem);
+
         Task<Void> task = new Task<Void>() {
             @Override
             public Void call() {
                 setTableData();
+                setSummaryData();
                 updateProgress(this.getProgress(), this.getTotalWork());
                 return null;
             }
@@ -542,8 +561,6 @@ public class CompareController extends BaseController {
     }
 
     private void setTableData() {
-        System.out.println("setTableData");
-        tableViewSummary.getItems().clear();
         tData.clear();
 
         Integer machine_id = cmbMachine.getValue().id;
@@ -554,10 +571,6 @@ public class CompareController extends BaseController {
             ResultSet mr = SqlLiteDb.getTheoremsFromSearch(machine_id, testset,
                     selectedProvers);
 
-            if (!mr.next()) {
-                showInfoMessage("Search", "No theorems found.");
-            }
-
             while (mr.next()) {
                 TheoremTable t = new TheoremTable(mr.getString("name"),
                         mr.getString("prover"), mr.getString("testset"),
@@ -566,70 +579,101 @@ public class CompareController extends BaseController {
                 tData.add(t);
             }
             tableViewComparedTheorem.setItems(tData);
+            if (mr.getRow() == 0) {
+                lblInfoSearch.setText("No theorems founded.");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private ObservableList<Series<String, Number>> getChartData() {
-        System.out.println("setChartData");
+    private ObservableList<Series<String, Float>> getChartData() {
         chartData.clear();
         String curr_prover = "";
-        XYChart.Series<String, Number> prover_serie = new XYChart.Series<String, Number>();
+        XYChart.Series<String, Float> prover_serie = new XYChart.Series<String, Float>();
 
         Integer machine_id = cmbMachine.getValue().id;
         String testset = cmbTestset.getValue();
         List<String> selectedProvers = getSelectedProver();
         ResultSet mr = null;
         try {
-            switch (testset) {
-            case SYJ:
-                mr = SqlLiteDb.getTheoremsFromSearch(machine_id, testset,
-                        selectedProvers);
-                break;
-            case RANDOMXX:
+            if (testset.compareTo(SYJ) == 0) {
+                mr = SqlLiteDb.getProvableTheoremsFromSearch(machine_id,
+                        testset, selectedProvers);
+            } else {
                 mr = SqlLiteDb.getMediaTheoremsTimeoutFromSearch(machine_id,
                         testset, selectedProvers);
-                break;
-            default:
-                break;
             }
 
-            if (!mr.next()) {
-                showInfoMessage("Search", "No theorems found.");
-            }
+            String cursor_prover = "";
+            String cursor_name = "";
+            Float cursor_execution = null;
+
             while (mr.next()) {
+                cursor_prover = mr.getString("prover");
+                cursor_execution = mr.getFloat("execution");
+                cursor_name = mr.getString("name");
+
                 if (curr_prover.compareTo("") == 0) {
-                    curr_prover = mr.getString("prover");
+                    curr_prover = cursor_prover;
                     prover_serie.setName(curr_prover);
-                }
+                } else {
+                    if (curr_prover.compareTo(cursor_prover) != 0) {
 
-                if (curr_prover.compareTo(mr.getString("prover")) != 0) {
-                    curr_prover = mr.getString("prover");
-                    chartData.add(prover_serie);
-                    prover_serie = new XYChart.Series<String, Number>();
-                    prover_serie.setName(curr_prover);
-                }
+                        chartData.add(prover_serie);
 
-                prover_serie.getData().add(
-                        new Data<String, Number>(mr.getString("name"), mr
-                                .getInt("execution")));
-
-                if (!mr.next()) {
-                    chartData.add(prover_serie);
+                        curr_prover = cursor_prover;
+                        prover_serie = new XYChart.Series<String, Float>();
+                        prover_serie.setName(curr_prover);
+                    }
                 }
+                Data<String, Float> item = new Data<String, Float>(cursor_name,
+                        cursor_execution);
+                Tooltip.install(item.getNode(), new Tooltip(""
+                        + cursor_execution));
+
+                prover_serie.getData().add(item);
+
             }
+            chartData.add(prover_serie);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return chartData;
     }
 
+    private void setSummaryData() {
+        tableViewSummary.getItems().clear();
+
+        Integer machine_id = cmbMachine.getValue().id;
+        String testset = cmbTestset.getValue();
+        List<String> selectedProvers = getSelectedProver();
+
+        try {
+            ResultSet mr = SqlLiteDb.getTotals(machine_id, testset,
+                    selectedProvers);
+
+            while (mr.next()) {
+                SummaryTable s = new SummaryTable(mr.getString("prover"),
+                        mr.getString("family"), mr.getString("testset"),
+                        mr.getInt("total_provable"), mr.getInt("total"),
+                        mr.getInt("execution_sum"), "");
+                sumData.add(s);
+
+            }
+            tableViewSummary.setItems(sumData);
+
+        } catch (SQLException e) {
+            showErrorMessage("Error :" + e.getMessage());
+        }
+    }
+
     private class ZoomHandler implements EventHandler<ScrollEvent> {
+        // XYChart
         @Override
         public void handle(ScrollEvent scrollEvent) {
-            NumberAxis yAxis = (NumberAxis) executionChart.getYAxis();
+            Axis<Float> yAxis = executionChart.getYAxis();
 
             if (scrollEvent.isControlDown()) {
                 boolean widthChange = false;
@@ -639,7 +683,7 @@ public class CompareController extends BaseController {
                 DoubleProperty x = new SimpleDoubleProperty();
                 x.set(scrollEvent.getX());
 
-                yAxis = (NumberAxis) executionChart.getYAxis();
+                // yAxis = executionChart.getYAxis();
 
                 if (scrollEvent.getDeltaY() > 0) {
                     if (executionChart.prefWidthProperty()
@@ -684,60 +728,5 @@ public class CompareController extends BaseController {
             }
         }
     }
-
-    private void setSummaryData() {
-        Integer machine_id = cmbMachine.getValue().id;
-        String testset = cmbTestset.getValue();
-        List<String> selectedProvers = getSelectedProver();
-
-        try {
-            ResultSet mr = SqlLiteDb.getTotals(machine_id, testset,
-                    selectedProvers);
-
-            while (mr.next()) {
-                SummaryTable s = new SummaryTable(mr.getString("prover"),
-                        mr.getString("family"), mr.getString("testset"),
-                        mr.getInt("total_provable"), mr.getInt("total"),
-                        mr.getInt("execution_sum"), "");
-                sumData.add(s);
-
-            }
-            tableViewSummary.setItems(sumData);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // private void setRandSummaryData() {
-    // final NumberAxis xAxis = new NumberAxis();
-    // final NumberAxis yAxis = new NumberAxis();
-    // xAxis.setLabel("Number of Month");
-    //
-    // lineRandChart = new LineChart<Number, Number>(xAxis, yAxis);
-    //
-    // lineRandChart.setTitle("Stock Monitoring, 2010");
-    //
-    // // XYChart.Series series = new XYChart.Series();
-    // XYChart.Series<Number, Number> series = new XYChart.Series<Number,
-    // Number>();
-    //
-    // series.setName("My portfolio");
-    //
-    // series.getData().add(new Data<Number, Number>(1, 23));
-    // series.getData().add(new Data<Number, Number>(2, 14));
-    // series.getData().add(new Data<Number, Number>(3, 15));
-    // series.getData().add(new Data<Number, Number>(4, 24));
-    // series.getData().add(new Data<Number, Number>(5, 34));
-    // series.getData().add(new Data<Number, Number>(6, 36));
-    // series.getData().add(new Data<Number, Number>(7, 22));
-    // series.getData().add(new Data<Number, Number>(8, 45));
-    // series.getData().add(new Data<Number, Number>(9, 43));
-    // series.getData().add(new Data<Number, Number>(10, 17));
-    // series.getData().add(new Data<Number, Number>(11, 29));
-    // series.getData().add(new Data<Number, Number>(12, 25));
-    //
-    // lineRandChart.getData().add(series);
-    // }
 
 }
