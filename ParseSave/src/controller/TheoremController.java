@@ -52,11 +52,10 @@ public class TheoremController extends BaseController {
         Window chooserStage = machineCombo.getScene().getWindow();
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose file with theorem to load");
+        fileChooser.setTitle("Choose one ore more theorem file to load");
         fileChooser.setInitialDirectory(new File("ParseSave/time-example"));
 
         List<File> files = fileChooser.showOpenMultipleDialog(chooserStage);
-        loadingIndicator.setVisible(true);
 
         Task<Void> task = new Task<Void>() {
             @Override
@@ -113,10 +112,10 @@ public class TheoremController extends BaseController {
         loadingIndicator.progressProperty().bind(task.progressProperty());
 
         if (!files.isEmpty()) {
+            loadingIndicator.setVisible(true);
             Thread th = new Thread(task);
             th.setDaemon(true);
             th.start();
-
         }
     }
 
