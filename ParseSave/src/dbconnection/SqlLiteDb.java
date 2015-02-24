@@ -282,7 +282,7 @@ public class SqlLiteDb {
         return null;
     }
 
-    public static ResultSet getAllTestsetProvers(String testset)
+    public static ResultSet getAllTestsetProvers(String testset, int machine_id)
             throws SQLException {
         if (conn.isClosed() == true) {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
@@ -292,7 +292,8 @@ public class SqlLiteDb {
             stmt = conn.createStatement();
             String sql = "SELECT distinct(prover) FROM theorem"
                     + " WHERE testset ='" + testset.toUpperCase() + "'"
-                    + " ORDER BY prover";
+                    + " AND machine_id = " + machine_id + " ORDER BY prover";
+            System.out.println(sql);
             ResultSet res = stmt.executeQuery(sql);
             return res;
 

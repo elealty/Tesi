@@ -25,6 +25,14 @@
                   <Label prefHeight="28.0" prefWidth="279.0" text="Filter theorems" />
                   <VBox prefHeight="521.0" prefWidth="170.0">
                      <children>
+                          <Label text="Machine">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin></Label>
+                        <ComboBox fx:id="cmbMachine" prefHeight="25.0" prefWidth="246.0" />
                         <Label text="Testset">
                            <VBox.margin>
                               <Insets top="10.0" />
@@ -50,14 +58,7 @@
                               <Font size="11.0" />
                            </font>
                         </CheckBox>
-                        <Label text="Machine">
-                           <font>
-                              <Font name="System Bold" size="13.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets top="10.0" />
-                           </VBox.margin></Label>
-                        <ComboBox fx:id="cmbMachine" prefHeight="25.0" prefWidth="246.0" />
+                   
                         <ProgressBar fx:id="searchingIndicator" prefHeight="20.0" prefWidth="311.0" progress="0.0" visible="false" />
                         <Label fx:id="lblInfoSearch" prefHeight="15.0" prefWidth="218.0" />
                         <HBox alignment="CENTER">
@@ -96,7 +97,7 @@
                      <content>
                         <StackPane fx:id="stackPaneChart" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="550.0">
                            <children>
-                              <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                              <VBox fx:id="vBoxChart" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <children>
                                     <ScrollPane fx:id="scrollPaneChart" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="629.0" prefViewportHeight="513.0" prefViewportWidth="690.0" prefWidth="840.0">
                                        <content>
@@ -112,7 +113,7 @@
                                     </ScrollPane>
                                  </children>
                               </VBox>
-                               <VBox fx:id="randSummary" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                               <VBox fx:id="vBoxRandChart" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <children>
                                     <ScrollPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefViewportHeight="513.0" prefViewportWidth="690.0" VBox.vgrow="ALWAYS">
                                        <content>
@@ -121,7 +122,7 @@
                                               <CategoryAxis animated="false" endMargin="2.0" gapStartAndEnd="false" label="Family" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" side="BOTTOM" startMargin="2.0" tickLabelRotation="90.0" />
                                             </xAxis>
                                             <yAxis>
-                                              <NumberAxis animated="false" label="Time (s)" minorTickCount="1" minorTickVisible="false" side="LEFT" tickLength="5.0" tickUnit="1.0" upperBound="20.0" />
+                                              <NumberAxis label="Time (s)" minorTickCount="1" minorTickVisible="false" side="LEFT" tickLength="5.0" tickUnit="1.0"  />
                                             </yAxis>
                                           </LineChart>
                                        </content></ScrollPane>
@@ -141,7 +142,7 @@
                                     <TableColumn maxWidth="142.0" minWidth="50.0" prefWidth="142.0" text="Executed">
                                        <columns>
                                           <TableColumn fx:id="itemTotalSum" style="-fx-alignment: center;" text="Total" />
-                                          <TableColumn fx:id="itemProvableSum" maxWidth="142.0" minWidth="50.0" prefWidth="100.0" style="-fx-alignment: center;" text="Provable" />
+                                          <TableColumn fx:id="itemProvableSum" maxWidth="142.0" minWidth="50.0" prefWidth="100.0" style="-fx-alignment: center;" text="Solved" />
                                           <TableColumn fx:id="itemExecutionSum" style="-fx-alignment: center;" text="Time (s)" />
                                        </columns>
                                     </TableColumn>

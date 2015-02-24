@@ -146,6 +146,10 @@ public class CompareController extends BaseController {
                                                                              .observableArrayList();
     @FXML
     Label                                         lblInfoSearch;
+    @FXML
+    VBox                                          vBoxChart;
+    @FXML
+    VBox                                          vBoxRandChart;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -182,12 +186,18 @@ public class CompareController extends BaseController {
                             Number oldValue, Number newValue) {
                         if ((Integer) newValue == 1) {
                             String testset = cmbTestset.getValue();
-                            executionChart.getData().clear();
-                            lineRandChart.getData().clear();
+
+                            System.out.println("change tab:" + newValue);
                             if (testset.compareTo(SYJ) == 0) {
-                                executionChart.setData(getChartData());
+                                executionChart.getData().clear();
+                                executionChart.getData().addAll(getChartData());
+                                vBoxChart.toFront();
+                                vBoxRandChart.toBack();
                             } else {
-                                lineRandChart.setData(getChartData());
+                                lineRandChart.getData().clear();
+                                lineRandChart.getData().addAll(getChartData());
+                                vBoxRandChart.toFront();
+                                vBoxChart.toBack();
                             }
 
                         }
@@ -196,9 +206,14 @@ public class CompareController extends BaseController {
                         }
                     }
                 });
+
     }
 
     private void configureRandXXCharts() {
+        lineRandChart.setAnimated(true);
+        lineRandChart.getYAxis().setAutoRanging(true);
+
+        // lineRandChart.addEventFilter(ScrollEvent.ANY, new ZoomHandler());
         // // lineRandChart.setCreateSymbols(false);
         // ValueAxis<Float> yAxis = (ValueAxis<Float>) lineRandChart.getYAxis();
         //
@@ -268,22 +283,23 @@ public class CompareController extends BaseController {
                     String oldValue, String newValue) {
                 provers.clear();
                 chkAllProvers.setSelected(false);
-                loadAllProvers(newValue);
+
                 Machine selectedMachine = cmbMachine.getSelectionModel()
                         .getSelectedItem();
                 if (selectedMachine != null && newValue != null) {
                     buttonSearch.setDisable(false);
+                    loadAllProvers(newValue, selectedMachine.id);
                 } else {
                     buttonSearch.setDisable(true);
                 }
 
-                System.out.println("change testste:" + newValue);
                 if (newValue.compareTo(SYJ) == 0) {
-                    System.out.println("front 0");
-                    stackPaneChart.getChildren().get(0).toFront();
+                    vBoxRandChart.toFront();
+                    vBoxChart.toBack();
                 } else {
-                    System.out.println("front 1");
-                    stackPaneChart.getChildren().get(1).toFront();
+                    vBoxRandChart.toBack();
+                    vBoxChart.toFront();
+                    // stackPaneChart.getChildren().get(1).toFront();
                 }
             }
         });
@@ -333,12 +349,13 @@ public class CompareController extends BaseController {
             Machine selectedMachine = cmbMachine.getSelectionModel()
                     .getSelectedItem();
             String testsetVal = cmbTestset.getValue();
-            // chkAllProvers.setSelected(false);
-                if (selectedMachine != null && testsetVal != null) {
-                    buttonSearch.setDisable(false);
-                }
+            chkAllProvers.setSelected(false);
+            if (selectedMachine != null && testsetVal != null) {
+                buttonSearch.setDisable(false);
+                loadAllProvers(testsetVal, selectedMachine.id);
+            }
 
-            });
+        });
 
         cmbMachine.setConverter(new StringConverter<Machine>() {
             @Override
@@ -495,11 +512,64 @@ public class CompareController extends BaseController {
         itemExecutionSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
                         "totalExecution"));
+
+        // tableViewSummary.sortPolicyProperty().set(
+        // new Callback<TableView<SummaryTable>, Boolean>() {
+        //
+        // @Override
+        // public Boolean call(TableView<SummaryTable> param) {
+        // Comparator<SummaryTable> comparator = new Comparator<SummaryTable>()
+        // {
+        // @Override
+        // public int compare(SummaryTable r1, SummaryTable r2) {
+        // int delay1 = r1.getTotal()
+        // - r1.getTotalProvable();
+        // int delay2 = r2.getTotal()
+        // - r2.getTotalProvable();
+        //
+        // System.out.println("DEALYS:" + delay1 + " "
+        // + delay2);
+        // System.out.println("ex :"
+        // + r1.getTotalExecution() + " "
+        // + r2.getTotalExecution());
+        // if (delay1 < delay2) {
+        // return -1;
+        // } else {
+        // if (delay1 == delay2) {
+        // if (r1.getTotalExecution() < r2
+        // .getTotalExecution()) {
+        // return 1;
+        // }
+        // return -1;
+        // }
+        // }
+        // // if (r1 == extraPerson) {
+        // // return 1;
+        // // } else if (r2 == extraPerson) {
+        // // return -1;
+        // // } else if (param.getComparator() == null) {
+        // // return 0;
+        // // }
+        // System.out
+        // .println("compare "
+        // + param.getComparator()
+        // .compare(r1, r2));
+        // return param.getComparator().compare(r1, r2);
+        // }
+        // };
+        // FXCollections.sort(tableViewSummary.getItems(),
+        // comparator);
+        // return true;
+        // }
+        // });
+
+        // tableViewSummary.getSortOrder().add(itemProverSum);
     }
 
-    private void loadAllProvers(String testset) {
+    private void loadAllProvers(String testset, int machine_id) {
+        provers.clear();
         try {
-            ResultSet mr = SqlLiteDb.getAllTestsetProvers(testset);
+            ResultSet mr = SqlLiteDb.getAllTestsetProvers(testset, machine_id);
             while (mr.next()) {
                 provers.add(new Prover(false, mr.getString("prover")));
             }
@@ -586,6 +656,7 @@ public class CompareController extends BaseController {
     }
 
     private ObservableList<Series<String, Float>> getChartData() {
+        System.out.println("get chart data");
         chartData.clear();
         String curr_prover = "";
         XYChart.Series<String, Float> prover_serie = new XYChart.Series<String, Float>();
@@ -596,9 +667,11 @@ public class CompareController extends BaseController {
         ResultSet mr = null;
         try {
             if (testset.compareTo(SYJ) == 0) {
+                System.out.println("SYJ");
                 mr = SqlLiteDb.getProvableTheoremsFromSearch(machine_id,
                         testset, selectedProvers);
             } else {
+                System.out.println("RAND");
                 mr = SqlLiteDb.getMediaTheoremsTimeoutFromSearch(machine_id,
                         testset, selectedProvers);
             }
@@ -626,14 +699,15 @@ public class CompareController extends BaseController {
                     }
                 }
                 Data<String, Float> item = new Data<String, Float>(cursor_name,
-                        cursor_execution);
-                Tooltip.install(item.getNode(), new Tooltip(""
-                        + cursor_execution));
-
+                        cursor_execution, new Tooltip(""
+                                + cursor_execution.floatValue()));
+                // Tooltip.install(item.getNode(), new Tooltip(""
+                // + cursor_execution));
                 prover_serie.getData().add(item);
 
             }
             chartData.add(prover_serie);
+            System.out.println("CHART DATA:" + chartData.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }
