@@ -472,40 +472,34 @@ public class SqlLiteDb {
             conn = DriverManager.getConnection("jdbc:sqlite:" + database_name);
         }
 
-        try {
-            stmt = conn.createStatement();
-            String sql = "SELECT distinct total_provable, total, t.prover, t.testset,"
-                    + "t.family, p.execution_sum "
-                    + " FROM total_by_prover t "
-                    + " LEFT JOIN provable_by_prover p"
-                    + " ON (p.testset = t.testset "
-                    + " AND p.prover = t.prover "
-                    + " AND p.family = t.family "
-                    + ")"
-                    + " WHERE t.testset ='"
-                    + testset
-                    + "'"
-                    + " AND t.machine_id ="
-                    + machine
-                    + " AND upper(t.prover) IN (";
-            ListIterator<String> iter = selectedProvers.listIterator();
-            while (iter.hasNext()) {
-                sql += "'" + iter.next().toUpperCase() + "'";
-                if (!iter.hasNext())
-                    break;
-                sql += ",";
-            }
-            sql += ")" + " GROUP BY t.prover, t.family, t.machine_id"
-                    + " ORDER BY t.prover, t.family";
-            System.out.println(sql);
-            ResultSet res = stmt.executeQuery(sql);
-            return res;
-
-        } catch (Exception e) {
-            System.err.println("ERRORE getTotals : " + e.getMessage());
-
+        stmt = conn.createStatement();
+        String sql = "SELECT distinct total_provable, total, t.prover, t.testset,"
+                + " (total - total_provable) as delay,"
+                + "t.family, p.execution_sum "
+                + " FROM total_by_prover t "
+                + " LEFT JOIN provable_by_prover p"
+                + " ON (p.testset = t.testset "
+                + " AND p.prover = t.prover "
+                + " AND p.family = t.family "
+                + ")"
+                + " WHERE t.testset ='"
+                + testset
+                + "'"
+                + " AND t.machine_id ="
+                + machine
+                + " AND upper(t.prover) IN (";
+        ListIterator<String> iter = selectedProvers.listIterator();
+        while (iter.hasNext()) {
+            sql += "'" + iter.next().toUpperCase() + "'";
+            if (!iter.hasNext())
+                break;
+            sql += ",";
         }
-        return null;
+        sql += ")" + " GROUP BY t.prover, t.family, t.machine_id"
+                + " ORDER BY t.prover, t.family, delay,execution_sum";
+        System.out.println(sql);
+        ResultSet res = stmt.executeQuery(sql);
+        return res;
     }
 
     public static ResultSet getMediaTheoremsTimeoutFromSearch(Integer machine,

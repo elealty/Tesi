@@ -461,6 +461,15 @@ public class CompareController extends BaseController {
         itemFamilySum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
                         "family"));
+        // itemFamilySum.sortTypeProperty().addListener(
+        // new ChangeListener<SortType>() {
+        // @Override
+        // public void changed(
+        // ObservableValue<? extends SortType> paramObservableValue,
+        // SortType param1, SortType param2) {
+        // System.out.println("P1:" + param1 + " " + param2);
+        // }
+        // });
         itemProverSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, String>(
                         "prover"));
@@ -503,19 +512,23 @@ public class CompareController extends BaseController {
                 }
             };
         });
+
         itemProvableSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
                         "totalProvable"));
+        itemProvableSum.setSortable(false);
         itemTotalSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
                         "total"));
+        itemTotalSum.setSortable(false);
         itemExecutionSum
                 .setCellValueFactory(new PropertyValueFactory<SummaryTable, Integer>(
                         "totalExecution"));
-
-        // tableViewSummary.sortPolicyProperty().set(
-        // new Callback<TableView<SummaryTable>, Boolean>() {
-        //
+        itemExecutionSum.setSortable(false);
+        // sumData.comparatorProperty()
+        // .bind(tableViewSummary.comparatorProperty());
+        // tableViewSummary.sortPolicyProperty().set(new
+        // Callback<TableView<SummaryTable>, Boolean>() {
         // @Override
         // public Boolean call(TableView<SummaryTable> param) {
         // Comparator<SummaryTable> comparator = new Comparator<SummaryTable>()
@@ -527,41 +540,21 @@ public class CompareController extends BaseController {
         // int delay2 = r2.getTotal()
         // - r2.getTotalProvable();
         //
-        // System.out.println("DEALYS:" + delay1 + " "
-        // + delay2);
-        // System.out.println("ex :"
-        // + r1.getTotalExecution() + " "
-        // + r2.getTotalExecution());
+        // System.out.println("DEALYS:" + delay1 + " " + delay2);
+        // System.out.println("ex :" + r1.getTotalExecution() + " " +
+        // r2.getTotalExecution());
         // if (delay1 < delay2) {
         // return -1;
         // } else {
         // if (delay1 == delay2) {
-        // if (r1.getTotalExecution() < r2
-        // .getTotalExecution()) {
+        // if (r1.getTotalExecution() < r2.getTotalExecution()) {
         // return 1;
         // }
         // return -1;
         // }
         // }
-        // // if (r1 == extraPerson) {
-        // // return 1;
-        // // } else if (r2 == extraPerson) {
-        // // return -1;
-        // // } else if (param.getComparator() == null) {
-        // // return 0;
-        // // }
-        // System.out
-        // .println("compare "
-        // + param.getComparator()
-        // .compare(r1, r2));
-        // return param.getComparator().compare(r1, r2);
         // }
-        // };
-        // FXCollections.sort(tableViewSummary.getItems(),
-        // comparator);
-        // return true;
         // }
-        // });
 
         // tableViewSummary.getSortOrder().add(itemProverSum);
     }
@@ -584,9 +577,7 @@ public class CompareController extends BaseController {
             if (prover.getSelected() == true)
                 selected.add(selected.size(), prover.getName());
         });
-
         return selected;
-
     }
 
     @FXML
@@ -625,7 +616,6 @@ public class CompareController extends BaseController {
             Thread th = new Thread(task);
             th.setDaemon(true);
             th.start();
-
         }
 
     }
@@ -729,7 +719,7 @@ public class CompareController extends BaseController {
                 SummaryTable s = new SummaryTable(mr.getString("prover"),
                         mr.getString("family"), mr.getString("testset"),
                         mr.getInt("total_provable"), mr.getInt("total"),
-                        mr.getInt("execution_sum"), "");
+                        mr.getInt("execution_sum"));
                 sumData.add(s);
 
             }
@@ -741,7 +731,6 @@ public class CompareController extends BaseController {
     }
 
     private class ZoomHandler implements EventHandler<ScrollEvent> {
-        // XYChart
         @Override
         public void handle(ScrollEvent scrollEvent) {
             Axis<Float> yAxis = executionChart.getYAxis();
@@ -753,8 +742,6 @@ public class CompareController extends BaseController {
 
                 DoubleProperty x = new SimpleDoubleProperty();
                 x.set(scrollEvent.getX());
-
-                // yAxis = executionChart.getYAxis();
 
                 if (scrollEvent.getDeltaY() > 0) {
                     if (executionChart.prefWidthProperty()

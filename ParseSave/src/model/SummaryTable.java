@@ -17,11 +17,10 @@ public class SummaryTable {
     private int    totalExecution;
 
     public SummaryTable(String prover, String family, String testset,
-            int totalProvable, int total, int totalExecution, String machineName) {
+            int totalProvable, int total, int totalExecution) {
         this.setProver(prover);
         this.setFamily(family);
         this.setTestset(testset);
-        this.setMachineName(machineName);
         this.setTotalProvable(totalProvable);
         this.setTotal(total);
         this.setTotalExecution(totalExecution);
@@ -35,14 +34,6 @@ public class SummaryTable {
     public int getTotalExecution() {
         return totalExecution;
 
-    }
-
-    public String getMachineName() {
-        return machineName;
-    }
-
-    public void setMachineName(String machine_name) {
-        this.machineName = machine_name;
     }
 
     public String getTestset() {

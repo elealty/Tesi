@@ -84,7 +84,7 @@
                      <content> 
                   <TableView fx:id="tableViewComparedTheorem" editable="true" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0">
                         <columns>
-                        <TableColumn fx:id="itemTestsetCompareCol" prefWidth="127.0" text="Prover" />
+                        <TableColumn fx:id="itemTestsetCompareCol" prefWidth="127.0" text="Testset" />
                         <TableColumn fx:id="itemProverCompareCol" prefWidth="127.0" text="Prover" />
                         <TableColumn fx:id="itemNameCompareCol" prefWidth="127.0" text="Name" />
                         <TableColumn fx:id="itemProvableCompareCol" maxWidth="80.0" minWidth="50.0" text="Provable" />
